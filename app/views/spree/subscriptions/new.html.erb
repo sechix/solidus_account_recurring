@@ -1,0 +1,97 @@
+<%= render :partial => 'spree/shared/error_messages', :locals => { :target => @subscription } %>
+
+<h2>Plan <%= @plan.name%> </h2>
+<h1>¡Tu primer box te espera!</h1>
+<br/>
+
+<fieldset id="order_details_subscription" class="width-30 float-right bg-light-gray padding-one-all" data-hook="" style="margin-bottom: 0px;">
+              <div class="clear"></div>
+              <h3 align="center" class="mobile-display-none">Más ventajas de tu plan</h3>
+
+      <div id="table-wrapper" class="border-none">
+      <div class="order_total_collection">
+
+        <div id="order-charges" data-hook="order_details_adjustments" class="padding-two">
+        </div>
+          <div id="subtotal" class="padding-two">
+          
+            <b>Subtotal:</b>
+            <span class="float-right"><%= @plan.amount %></span>
+          
+        </div>
+
+
+
+          <div id="order-total" data-hook="order_details_total" style="font-size:20px; padding-top:5px">
+          
+            <b>Total:</b>
+            <span id="order_total" class="float-right custom-display-amount-service"><b>      
+
+             <%= Money.new(1, Spree::Config[:currency]).symbol %><%= @plan.amount %></b></span>
+          </div>
+
+          <div id="order-total-assegurance" data-hook="order_details_total" style="font-size:20px; padding-top:5px">
+          
+            <b>Total:</b>
+            <span id="order_total" class="float-right custom-display-amount-service"><b>      
+
+             <%= Money.new(1, Spree::Config[:currency]).symbol %><%= @plan.amount%></b></span>
+          </div>
+
+       </div>
+       <div id="order_discount" class="bg-blue-degrated mobile-display-none">
+            <i class="fa fa-info-circle"></i>NO TE QUEDES CON DUDAS, VISITA 
+            <a href="https://pislow.zendesk.com/hc/es">NUESTRO CENTRO DE AYUDA</a>
+       </div>
+
+</fieldset>
+
+
+
+
+<%= form_for @subscription, url: recurring_plan_subscriptions_url(@plan) do |f| %>
+
+
+  <%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
+
+  <div id="plan_<%= @plan.id %>_subscribe">
+    <p class="field" data-hook="card_number">
+      <%= label_tag "card_number", Spree.t(:card_number) %><span class="required">*</span><br />
+      <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
+      <%= text_field_tag "card_number", '', options_hash.merge(:id => 'card_number', :class => 'required cardNumber', :size => 19, :maxlength => 19, :autocomplete => "off") %>
+      &nbsp;
+      <span id="card_type" style="display:none;">
+        ( <span id="looks_like" ><%= Spree.t(:card_type_is) %> <span id="type"></span></span>
+          <span id="unrecognized"><%= Spree.t(:unrecognized_card_type) %></span>
+        )
+      </span>
+    </p>
+    <p class="field" data-hook="card_expiration">
+      <%= label_tag "card_expiry", Spree.t(:expiration) %><span class="required">*</span><br />
+      <%= text_field_tag "card_expiry", '', :id => 'card_expiry', :class => "required cardExpiry", :placeholder => "MM / YY" %>
+    </p>
+    <p class="field" data-hook="card_code">
+      <%= label_tag "card_code", Spree.t(:card_code) %><span class="required">*</span><br />
+      <%= text_field_tag "card_code", '', options_hash.merge(:id => 'card_code', :class => 'required cardCode', :size => 5) %>
+      <a target="_blank" data-hook="cvv_link" id="cvv_link" href="/content/cvv">(¿Qué es esto?)</a>
+    </p>
+  </div>
+  
+  <%= f.submit Spree.t(:subscribe), class: 'continue button primary', :id => "button_pay" %>
+
+   <br/><br/>
+
+   <%= check_box_tag :accept_terms_and_conditions  ,'accepted',false %>
+                
+   <%= label_tag :accept_terms_and_conditions, Spree.t(:acepto) %>
+   <a href="/user_conditions" >las condiciones de uso</a>
+
+
+  <script>Spree.disableSaveOnClick();</script>
+<% end %>
+
+
+
+
+
+</script>

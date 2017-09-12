@@ -1,0 +1,66 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+
+<% content_for :page_title do %>
+  <%= Spree.t(:editing_recurring) %> <i class="icon-arrow-right"></i> <%= @recurring.name %> <i class="icon-arrow-right"></i> <%= Spree.t(:plans) %>
+<% end %>
+
+<% content_for :page_actions do %>
+  <%= button_link_to Spree.t(:new_plan), new_admin_recurring_plan_path(@recurring), :icon => 'plus', class: "btn-success", :id => 'admin_new_recurring_plans_link' %>
+<% end if can? :create, Spree::Plan %>
+
+<% if @plans.present? %>
+  <table class="table" id='listing_recurring_plans'>
+    <thead>
+      <tr data-hook="admin_recurring_plans_index_headers">
+        <th><%= Spree.t(:stripe_id) %></th>
+        <th><%= Spree.t(:name) %></th>
+        <th><%= Spree.t(:description) %></th>
+        <th><%= Spree.t(:free_cleaning) %></th>
+        <th><%= Spree.t(:free_shipping) %></th>
+        <th><%= Spree.t(:special_sales) %></th>
+        <th><%= Spree.t(:amount) %></th>
+        <th><%= Spree.t(:points) %></th>
+        <th><%= Spree.t(:interval) %></th>
+        <th><%= Spree.t(:interval_count) %></th>
+        <th><%= Spree.t(:currency) %></th>
+        <th><%= Spree.t(:trial_period_days) %></th>
+        <th><%= Spree.t(:active) %></th>
+        <th><%= Spree.t(:default) %></th>
+        <th data-hook="admin_recurring_plans_index_header_actions" class="actions actions-2 text-right"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @plans.each do |plan|%>
+        <tr id="<%= spree_dom_id plan %>" data-hook="admin_recurring_plans_index_rows" class="<%= cycle('odd', 'even')%>">
+          <td><%= plan.stripe_id %></td>
+          <td><%= plan.name %></td>
+          <td><%= plan.description %></td>
+          <td><%= plan.free_cleaning ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
+          <td><%= plan.free_shipping ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
+          <td><%= plan.special_sales ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
+          <td><%= plan.amount %></td>
+          <td><%= plan.points %></td>
+          <td><%= @recurring.class::INTERVAL[plan.interval.to_sym] %></td>
+          <td><%= plan.interval_count %></td>
+          <td><%= @recurring.class::CURRENCY[plan.currency.to_sym] %></td>
+          <td><%= plan.trial_period_days %></td>
+          <td><%= plan.active ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
+          <td><%= plan.default ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
+          <td data-hook="admin_recurring_plans_index_row_actions" class="actions actions-2 text-right">
+            <%= link_to_edit_url edit_admin_recurring_plan_url(@recurring, plan), :no_text => true %>
+            <%= link_to_delete plan, url: admin_recurring_plan_url(@recurring, plan), :no_text => true  %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alert alert-info no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/plan')) %>,
+    <%= link_to Spree.t(:add_one), spree.new_admin_recurring_plan_path(@recurring) if can? :create, Spree::Plan %>!
+  </div>
+<% end %>
+
+<div data-hook="buttons" class="filter-actions actions">
+  <%= button_link_to Spree.t(:back), edit_admin_recurring_url(@recurring) %>
+</div>

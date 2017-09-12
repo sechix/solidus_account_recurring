@@ -1,0 +1,73 @@
+<div data-hook="admin_plan_form_fields">
+
+  <div data-hook="plan">
+    <div class="col-md-4">
+
+      <div class="form-group">
+        <%= f.label :interval, Spree.t(:interval) %>
+        <%= f.select :interval, @recurring.class::INTERVAL.collect{|k, v| [v, k]}, {}, {:disabled => @plan.persisted?, class: 'select2'} %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :interval_count, Spree.t(:every) %>
+        <%= f.select :interval_count, (1..11).collect {|i| [i, i]}, {}, {:disabled => @plan.persisted?, class: 'select2'} %>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :currency, Spree.t(:currency) %>
+        <%= f.select :currency, @recurring.class::CURRENCY.collect{|k, v| [v, k]}, {}, {:disabled => @plan.persisted?, class: 'select2'} %>
+      </div>
+    </div>
+
+    <div class="col-md-8">
+      <div class="form-group">
+        <%= f.label :name, Spree.t(:name) %>
+        <%= f.text_field :name, :class => 'form-control' %>
+      </div>
+      <div class="form-group">
+        <%= f.label :description, Spree.t(:description) %>
+         <%= f.text_field :description, :class => 'form-control' %>
+
+      </div>
+
+      <div class="form-group">
+        <%= f.label :amount, Spree.t(:amount) %>
+        <%= f.text_field :amount, :class => 'form-control'%>
+      </div>
+      <div class="form-group">
+        <%= f.label :points, Spree.t(:points) %>
+        <%= f.text_field :points, :class => 'form-control'%>
+      </div>
+
+      <div class="form-group">
+        <%= f.label :trial_period_days, Spree.t(:trial_period_days) %>
+        <%= f.text_field :trial_period_days, :class => 'form-control' %>
+      </div>
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :free_shipping %>
+          <%= Spree.t(:free_shipping) %>
+        </label>
+        <label>
+          <%= f.check_box :free_cleaning %>
+          <%= Spree.t(:free_cleaning) %>
+        </label>
+        <label>
+          <%= f.check_box :special_sales %>
+          <%= Spree.t(:special_sales) %>
+        </label>
+      </div>
+
+      <div class="checkbox">
+        <label>
+          <%= f.check_box :active %>
+          <%= Spree.t(:active) %>
+        </label>&nbsp;&nbsp;&nbsp;&nbsp;
+        <label>
+          <%= f.check_box :default %>
+          <%= Spree.t(:default) %>
+        </label>
+      </div>
+    </div>
+  </div>
+</div>
