@@ -1,36 +1,36 @@
 <% content_for :page_title do %>
-  stripe_id Spree.t(:subscription_events) %>
+  api_plan_id Spree.t(:subscription_events) %>
 <% end %>
 
 <% content_for :page_actions do %>
-  stripe_id link_to_with_icon 'arrow-left', Spree.t(:back_to_reports_list), spree.admin_reports_url, :class => 'btn btn-default' %>
+  api_plan_id link_to_with_icon 'arrow-left', Spree.t(:back_to_reports_list), spree.admin_reports_url, :class => 'btn btn-default' %>
 <% end %>
 
 <% content_for :table_filter_title do %>
-  stripe_id Spree.t(:subscription_event_search) %>
+  api_plan_id Spree.t(:subscription_event_search) %>
 <% end %>
 
 <div class="well">
-  stripe_id search_form_for @search, :url => spree.admin_subscription_events_url  do |s| %>
+  api_plan_id search_form_for @search, :url => spree.admin_subscription_events_url  do |s| %>
     <div class="date-range-filter form-group">
-      stripe_id label_tag nil, Spree.t(:date_range) %>
+      api_plan_id label_tag nil, Spree.t(:date_range) %>
       <div class="date-range-filter row">
         <div class="col-md-6">
-          stripe_id s.text_field :created_at_gt, :class => 'datepicker datepicker-from form-control', :value => datepicker_field_value(params[:q][:created_at_gt]) %>
+          api_plan_id s.text_field :created_at_gt, :class => 'datepicker datepicker-from form-control', :value => datepicker_field_value(params[:q][:created_at_gt]) %>
         </div>
         <div class="col-md-6">
-          stripe_id s.text_field :created_at_lt, :class => 'datepicker datepicker-to form-control', :value => datepicker_field_value(params[:q][:created_at_lt]) %>
+          api_plan_id s.text_field :created_at_lt, :class => 'datepicker datepicker-to form-control', :value => datepicker_field_value(params[:q][:created_at_lt]) %>
         </div>
       </div>
     </div>
 
     <div class="date-range-filter form-group">
-      stripe_id label_tag nil, Spree.t(:email) %>
-      stripe_id s.text_field :subscription_email_eq, class: "form-control" %>
+      api_plan_id label_tag nil, Spree.t(:email) %>
+      api_plan_id s.text_field :subscription_email_eq, class: "form-control" %>
     </div>
 
     <div class="form-actions">
-      stripe_id button Spree.t(:search), 'search'  %>
+      api_plan_id button Spree.t(:search), 'search'  %>
     </div>
   <% end %>
 </div>
@@ -39,28 +39,28 @@
   <table class="table table-bordered admin-report" id='listing_subscription_events'>
     <thead>
       <tr data-hook="admin_subscription_events_index_headers">
-        <th>stripe_id Spree.t(:email) %></th>
-        <th>stripe_id Spree.t(:plan) %></th>
-        <th>stripe_id Spree.t(:request_type) %></th>
-        <th>stripe_id Spree.t(:created_at) %></th>
+        <th>api_plan_id Spree.t(:email) %></th>
+        <th>api_plan_id Spree.t(:plan) %></th>
+        <th>api_plan_id Spree.t(:request_type) %></th>
+        <th>api_plan_id Spree.t(:created_at) %></th>
       </tr>
     </thead>
     <tbody>
       <% @subscription_events.each do |subscription_event|%>
         <% plan = subscription_event.subscription.plan %>
-        <tr data-hook="admin_subscription_events_index_rows" class="stripe_id cycle('odd', 'even')%>">
-          <td>stripe_id subscription_event.subscription.email %></td>
-          <td>stripe_id link_to plan.api_plan_id, edit_admin_recurring_plan_url(plan.recurring, plan) %></td>
-          <td>stripe_id subscription_event.request_type %></td>
-          <td>stripe_id subscription_event.created_at.try(:strftime, '%d-%h-%Y') %></td>
+        <tr data-hook="admin_subscription_events_index_rows" class="api_plan_id cycle('odd', 'even')%>">
+          <td>api_plan_id subscription_event.subscription.email %></td>
+          <td>api_plan_id link_to plan.api_plan_id, edit_admin_recurring_plan_url(plan.recurring, plan) %></td>
+          <td>api_plan_id subscription_event.request_type %></td>
+          <td>api_plan_id subscription_event.created_at.try(:strftime, '%d-%h-%Y') %></td>
         </tr>
       <% end %>
     </tbody>
   </table>
 
-  stripe_id paginate @subscription_events %>
+  api_plan_id paginate @subscription_events %>
 <% else %>
   <div class="col-md-12 no-objects-found alert alert-info">
-    stripe_id Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/subscription_event')) %>
+    api_plan_id Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/subscription_event')) %>
   </div>
 <% end %>

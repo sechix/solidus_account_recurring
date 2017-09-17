@@ -12,7 +12,7 @@
   <table class="table" id='listing_recurring_plans'>
     <thead>
       <tr data-hook="admin_recurring_plans_index_headers">
-        <th><%= Spree.t(:stripe_id) %></th>
+        <th><%= Spree.t(:api_plan_id) %></th>
         <th><%= Spree.t(:name) %></th>
         <th><%= Spree.t(:description) %></th>
         <th><%= Spree.t(:free_cleaning) %></th>
@@ -32,7 +32,7 @@
     <tbody>
       <% @plans.each do |plan|%>
         <tr id="<%= spree_dom_id plan %>" data-hook="admin_recurring_plans_index_rows" class="<%= cycle('odd', 'even')%>">
-          <td><%= plan.stripe_id %></td>
+          <td><%= plan.api_plan_id %></td>
           <td><%= plan.name %></td>
           <td><%= plan.description %></td>
           <td><%= plan.free_cleaning ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>

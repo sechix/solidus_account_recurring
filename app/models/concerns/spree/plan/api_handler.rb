@@ -4,7 +4,7 @@ module Spree
       extend ActiveSupport::Concern
 
       included do
-        before_validation :set_stripe_id, on: :create
+        before_validation :set_api_plan_id, on: :create
         after_create :create_plan
         after_update :delete_plan, :if => [:deleted_at_changed?, :deleted_at?]
        
@@ -38,8 +38,8 @@ module Spree
 
       private
 
-      def set_stripe_id
-        provider.set_stripe_id(self)
+      def set_api_plan_id
+        provider.set_api_plan_id(self)
       end
     end
   end

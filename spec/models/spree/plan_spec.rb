@@ -15,7 +15,7 @@ describe Spree::Plan do
   it { plan.should validate_presence_of :name }
   it { plan.should validate_presence_of :currency }
   it { plan.should validate_presence_of :recurring_id }
-  it { plan.should validate_presence_of :stripe_id }
+  it { plan.should validate_presence_of :api_plan_id }
   it { plan.should have_readonly_attribute :amount }
   it { plan.should have_readonly_attribute :interval }
   it { plan.should have_readonly_attribute :currency }
@@ -23,7 +23,7 @@ describe Spree::Plan do
   it { plan.should have_readonly_attribute :trial_period_days }
   it { plan.should have_readonly_attribute :interval_count }
   it { plan.should have_readonly_attribute :recurring_id }
-  it { plan.should have_readonly_attribute :stripe_id }
+  it { plan.should have_readonly_attribute :api_plan_id }
 
   it 'should create stripe plan after creation' do
     Stripe::Plan.all.should be_blank
@@ -39,10 +39,10 @@ describe Spree::Plan do
   end
 
   it 'should update stripe plan when plan updated' do
-    old_name = Stripe::Plan.retrieve(plan.stripe_id).name
+    old_name = Stripe::Plan.retrieve(plan.api_plan_id).name
     plan.update_attributes(name: 'Update test plan')
-    Stripe::Plan.retrieve(plan.stripe_id).name.should_not eq(old_name)
-    Stripe::Plan.retrieve(plan.stripe_id).name.should eq('Update test plan')
+    Stripe::Plan.retrieve(plan.api_plan_id).name.should_not eq(old_name)
+    Stripe::Plan.retrieve(plan.api_plan_id).name.should eq('Update test plan')
   end
 
   describe 'before_validation manage_default' do

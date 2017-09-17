@@ -7,7 +7,7 @@ module Spree
         attr_accessor :card_token
         before_create :subscribe
         before_update :unsubscribe, :if => [:unsubscribed_at_changed?, :unsubscribed_at?]
-        before_update  :update, :if => [ :plan_id?]
+
       end
 
       def subscribe
@@ -19,8 +19,8 @@ module Spree
         provider.unsubscribe(self)
       end
 
-      def update
-        provider.update(self, plan_id)
+      def update(api_plan_id)
+        provider.update(self, api_plan_id)
       end
 
       def save_and_manage_api(*args)
