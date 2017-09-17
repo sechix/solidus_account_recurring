@@ -26,9 +26,6 @@ module Spree
             raise_invalid_object_error(plan, Spree::Plan)
             stripe_plan = retrieve_stripe(plan)
             stripe_plan.name = plan.name
-            stripe_plan.amount = stripe_amount(plan.amount)
-            stripe_plan.currency = plan.currency
-            stripe_plan.trial_period_days = plan.trial_period_days
             stripe_plan.save
           end
 
