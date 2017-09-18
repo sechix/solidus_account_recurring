@@ -8,6 +8,7 @@ module Spree
     respond_to :json
 
     def handler
+      NotificationsMailer.not_cleaned(@subscription).deliver_now
       @subscription_event = @subscription.events.build(subscription_event_params)
       if @subscription_event.save
         render_status_ok
