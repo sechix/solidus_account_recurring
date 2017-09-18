@@ -8,6 +8,7 @@ module Spree
     respond_to :json
 
     def handler
+      cdsc
       @subscription_event = @subscription.events.build(subscription_event_params)
       if @subscription_event.save
         render_status_ok
