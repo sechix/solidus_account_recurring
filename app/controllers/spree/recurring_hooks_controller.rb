@@ -8,8 +8,9 @@ module Spree
     respond_to :json
 
     def handler
-      cdsc
-      @subscription_event = @subscription.events.build(subscription_event_params)
+      retrieve_api_event
+      @subscription_event = Spree::Subscription_event.new(:event_id => @event.id, 
+       :subscription_id => @subscription.id , :request_type => @event.type )
       if @subscription_event.save
         render_status_ok
       else
@@ -28,11 +29,14 @@ module Spree
     end
 
     def find_subscription
-      render_status_ok unless @subscription = Spree::User.find_by(stripe_customer_id: event[:data][:object][:customer]).subscription
+      render_status_ok unless  @subscription = Spree::User.find_by(stripe_customer_id: event[:data][:object][:customer]).subscriptions
     end
 
     def retrieve_api_event
-      @event = @subscription.provider.retrieve_event(event[:id])
+      @event = Stripe::Event.retrieve(event[:id])
+
+      rescue Stripe::APIConnectionError, Stripe::StripeError
+      render nothing: true, status: 400
     end
 
     def subscription_event_params
@@ -44,11 +48,11 @@ module Spree
     end
 
     def render_status_ok
-      render text: '', status: 200
+      render plain: '', status: 200
     end
 
     def render_status_failure
-      render text: '', status: 403
+      render plain: '', status: 403
     end
   end
 end
