@@ -34,9 +34,6 @@ module Spree
 
     def retrieve_api_event
       @event = Stripe::Event.retrieve(event[:id])
-
-      rescue Stripe::APIConnectionError, Stripe::StripeError
-      render nothing: true, status: 400
     end
 
     def subscription_event_params
