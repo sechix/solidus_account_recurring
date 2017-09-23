@@ -33,7 +33,7 @@ module Spree
     end
 
     def retrieve_api_event
-      @event = Stripe::Event.retrieve(event[:id])
+      @event = @subscription.provider.retrieve_event(event[:id])
     end
 
     def subscription_event_params
