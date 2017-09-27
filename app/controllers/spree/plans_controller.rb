@@ -1,5 +1,5 @@
   module Spree
-  class PlansController < StoreController
+  class PlansController < BaseController
     before_action :load_user_subscriptions
 
     def index
