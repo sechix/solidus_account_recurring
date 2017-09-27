@@ -1,13 +1,20 @@
 module Spree
-  class SubscriptionsController < BaseController
+  class SubscriptionsController < StoreController
     prepend_before_action :load_object
     before_action :find_active_plan, only: [:new, :create]
     before_action :find_plan, only: [:show, :destroy, :update]
     before_action :find_subscription, only: [:destroy]
     before_action :authenticate_subscription, only: [:new, :create]
+    before_action :payment_method, only: [:new]
 
     def new
+
       @subscription = @plan.subscriptions.build
+
+    end
+
+    def payment_method
+      @payment_method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
     end
 
     def create
@@ -16,7 +23,7 @@ module Spree
         redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
       else
         flash[:error] = Spree.t(:error)
-        render :show
+        redirect_to request.path and return
       end
     end
 
@@ -25,29 +32,30 @@ module Spree
         redirect_to request.path, notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
-        render :show
+        redirect_to request.path and return
       end
+   
     end
 
     def update
-      @plans = Spree::Plan.visible.order('id desc')
-      @plans.each do |plan3| 
-          if @subscription = plan3.subscriptions.undeleted.where(id: params[:id]).first
+          if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
 
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
                   flash[:notice] = Spree.t(:subscription_change)
                   redirect_to request.path and return
                  else
-                    flash[:error] = Spree.t(:error)
-                    render :show
+                  flash[:error] = Spree.t(:error)
+                  redirect_to request.path and return
                  end 
               else
-                flash[:error] = Spree.t(:error)
-                render :show
+                  flash[:error] = Spree.t(:error)
+                  redirect_to request.path and return
               end
-          end
-      end
+           else
+              flash[:error] = Spree.t(:error)
+              redirect_to request.path and return
+           end       
     end
 
     private
