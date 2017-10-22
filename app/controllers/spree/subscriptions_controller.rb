@@ -8,9 +8,7 @@ module Spree
     before_action :payment_method, only: [:new]
 
     def new
-
-      @subscription = @plan.subscriptions.build
-
+      @subscription = @plan.subscriptions.build  
     end
 
     def payment_method
@@ -38,6 +36,7 @@ module Spree
     end
 
     def update
+
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
 
               if @subscription.update(@plan.api_plan_id)
@@ -57,6 +56,12 @@ module Spree
               redirect_to request.path and return
            end       
     end
+    def edit
+      @subscription = spree_current_user.subscriptions.undeleted.first 
+      @plan = Spree::Plan.active.where(id: @subscription.plan_id).first  
+
+    end
+
 
     private
 
@@ -84,6 +89,7 @@ module Spree
     def subscription_params
       params.require(:subscription).permit(:email, :card_token)
     end
+
 
     def load_object
       @user ||= spree_current_user

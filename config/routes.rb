@@ -14,10 +14,18 @@ Spree::Core::Engine.routes.draw do
 
   namespace :recurring do
     resources :plans, only: [ :index , :show ], controller: '/spree/plans' do
-      resources :subscriptions, only: [:show, :create, :destroy, :new, :update], controller: '/spree/subscriptions'
+      resources :subscriptions, only: [:show, :create, :destroy, :new, :update, :edit ], controller: '/spree/subscriptions' 
+      
     end
-  end
+  end  
 
+
+  namespace :recurring do
+      resources :resources, only: [ :new , :create ], controller: '/spree/resources' do
+         get :getcustomer , on: :collection 
+      end
+  end 
+  get 'recurring/resources', :to => 'resources#create' 
 
 
 end

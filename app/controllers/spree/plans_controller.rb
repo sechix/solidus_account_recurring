@@ -11,6 +11,7 @@
         redirect_to '/account'
       end
     end
+    
     private
       def load_user_subscriptions
         if current_spree_user

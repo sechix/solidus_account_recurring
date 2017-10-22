@@ -1,13 +1,12 @@
 <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @subscription } %>
 
-<h2>Plan <%= @plan.name%> </h2>
-<h1>¡Tu primer box te espera!</h1>
+<h1>Cambiar tarjeta crédito/débido</h1>
 <br/>
 
 <%= render 'spree/shared/planes_advantages' %>
 
-<%= form_for @subscription, url: recurring_plan_subscriptions_url(@plan) do |f| %>
-
+<div class="edit_subscription">
+<%=  form_tag recurring_resources_path , method: :post do |f| %>
 
   <%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
 
@@ -34,17 +33,10 @@
     </p>
   </div>
   
-  <%= button_tag Spree.t(:subscribe), class: 'continue button primary', :id => "button_pay" %>
+  <%= button_tag Spree.t(:change), class: 'continue button primary', :id => "button_pay" %>
 
-  <%= check_box_tag :accept_terms_and_conditions  ,'accepted',false %>
-                
-   <%= label_tag :accept_terms_and_conditions, Spree.t(:acepto) %>
-   <a href="/user_conditions" >las condiciones de uso</a>
-
-
-  <script>Spree.disableSaveOnClick();</script>
 <% end %>
-
+</div>
 
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
 <script type="text/javascript">Stripe.setPublishableKey("<%= @plan.provider.preferred_public_key %>");</script>
@@ -53,11 +45,6 @@
 
 
 <script type="text/javascript">
-
-    $(document).ready(function () {
-       $('#button_pay').prop('disabled', true);
-
-    });
 
     
 $(document).ready(function () {

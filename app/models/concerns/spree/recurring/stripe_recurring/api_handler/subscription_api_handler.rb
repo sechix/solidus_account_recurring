@@ -19,6 +19,19 @@ module Spree
             raise_invalid_object_error(subscription, Spree::Subscription)
             subscription.user.api_customer.update_subscription(plan: api_plan_id, prorate: false )
           end
+          def changecard(subscription, card_token)
+            raise_invalid_object_error(subscription, Spree::Subscription) 
+            customer = Stripe::Customer.retrieve(subscription.user.stripe_customer_id)
+            card = customer.sources.create(source: card_token)
+            customer.default_source = card.id
+            customer.save
+          end
+          def getcustomer(subscription)
+            raise_invalid_object_error(subscription, Spree::Subscription) 
+            customer = Stripe::Customer.retrieve(subscription.user.stripe_customer_id)
+            @card = customer.default_source;
+          end
+
         end
       end
     end

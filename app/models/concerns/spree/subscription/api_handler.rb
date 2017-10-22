@@ -23,6 +23,16 @@ module Spree
         provider.update(self, api_plan_id)
       end
 
+      def changecard
+        card_token = self.card_token
+        provider.changecard(self,card_token)
+      end
+      
+      def getcustomer
+        provider.getcustomer(self)
+      end
+      
+
       def save_and_manage_api(*args)
         begin
           new_record? ? save : update_attributes(*args)

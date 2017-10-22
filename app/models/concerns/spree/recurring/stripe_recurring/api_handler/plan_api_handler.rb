@@ -16,6 +16,8 @@ module Spree
             )
           end
 
+          
+
           def delete_plan(plan)
             raise_invalid_object_error(plan, Spree::Plan)
             stripe_plan = retrieve_stripe(plan)
@@ -41,6 +43,10 @@ module Spree
 
           def stripe_amount(amount)
             (amount * 100).to_i
+          end
+
+          def get_customer
+            Stripe::Customer.retrieve(spree_current_user.stripe_customer_id)
           end
         end
       end
