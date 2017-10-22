@@ -45,15 +45,15 @@ module Spree
                   redirect_to request.path and return
                  else
                   flash[:error] = Spree.t(:error)
-                  redirect_to request.path and return
+                  redirect_to '/account'
                  end 
               else
                   flash[:error] = Spree.t(:error)
-                  redirect_to request.path and return
+                  redirect_to '/account'
               end
            else
               flash[:error] = Spree.t(:error)
-              redirect_to request.path and return
+              redirect_to '/account'
            end       
     end
     def edit
