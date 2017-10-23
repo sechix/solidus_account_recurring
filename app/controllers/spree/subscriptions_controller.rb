@@ -42,7 +42,7 @@ module Spree
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
                   flash[:notice] = Spree.t(:subscription_change)
-                  redirect_to request.path and return
+                  redirect_to '/account' and return
                  else
                   flash[:error] = Spree.t(:error)
                   redirect_to '/account'
