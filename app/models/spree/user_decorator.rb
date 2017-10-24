@@ -7,10 +7,8 @@ Spree::User.class_eval do
       Stripe::Customer.create(description: email, email: email, card: token)
     else
       Stripe::Customer.create(description: email, email: email)
-      card = customer.sources.create(source: token)
-      customer.default_source = card.id
-      customer.save
-      
+
+
     end
     update_column(:stripe_customer_id, customer.id)
     customer
