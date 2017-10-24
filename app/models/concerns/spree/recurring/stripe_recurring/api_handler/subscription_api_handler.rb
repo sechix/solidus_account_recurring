@@ -5,13 +5,17 @@ module Spree
         module SubscriptionApiHandler
           def subscribe(subscription)
             raise_invalid_object_error(subscription, Spree::Subscription)
+            unless subscription.user.stripe_customer_id.nil?
+              customer2 = Stripe::Customer.retrieve(subscription.user.stripe_customer_id)
+              unless customer2.default_source.nil?
+                card = customer2.sources.create(source: subscription.card_token)
+                customer2.default_source = card.id
+                customer2.save
+              end
+            end
             customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
             customer.subscriptions.create(plan: subscription.plan.api_plan_id)
-            unless customer.default_source.nil?
-              card = customer.sources.create(source: subscription.card_token)
-              customer.default_source = card.id
-              customer.save
-            end
+
           end
 
           def unsubscribe(subscription)
