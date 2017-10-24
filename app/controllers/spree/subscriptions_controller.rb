@@ -21,16 +21,16 @@ module Spree
         redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
       else
         flash[:error] = Spree.t(:error)
-        redirect_to request.path and return
+        redirect_to '/account' and return
       end
     end
 
     def destroy
       if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
-        redirect_to request.path, notice: Spree.t(:subscription_canceled)
+        redirect_to '/account', notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
-        redirect_to request.path and return
+        redirect_to  '/account'
       end
    
     end
@@ -68,21 +68,21 @@ module Spree
     def find_active_plan
       unless @plan = Spree::Plan.active.where(id: params[:plan_id]).first
         flash[:error] = Spree.t(:plan_not_found)
-        redirect_to request.path and return
+        redirect_to '/account'
       end
     end
 
     def find_plan
       unless @plan = Spree::Plan.where(id: params[:plan_id]).first
         flash[:error] = Spree.t(:plan_not_found)
-        redirect_to request.path and return
+        redirect_to '/account'
       end
     end
 
     def find_subscription
       unless @subscription = @plan.subscriptions.undeleted.where(id: params[:id]).first
         flash[:error] = Spree.t(:subscription_not_found)
-        redirect_to request.path and return
+        redirect_to '/account'
       end
     end
 
@@ -99,7 +99,7 @@ module Spree
     def authenticate_subscription
       if subscription = spree_current_user.subscriptions.undeleted.first
         flash[:alert] = Spree.t(:already_subscribed)
-        redirect_to request.path and return
+        redirect_to '/account'
       end
     end
   end
