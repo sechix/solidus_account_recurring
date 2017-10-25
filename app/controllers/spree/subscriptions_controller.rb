@@ -92,8 +92,9 @@ module Spree
 
 
     def load_object
-      @user ||= spree_current_user
-      authorize! params[:action].to_sym, @user
+      
+      # @user ||= spree_current_user
+      # authorize! params[:action].to_sym, @user
     end
 
     def authenticate_subscription
