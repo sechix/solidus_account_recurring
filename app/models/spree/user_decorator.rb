@@ -4,7 +4,7 @@ Spree::User.class_eval do
   def find_or_create_stripe_customer(token=nil)
     if stripe_customer_id?
       unless api_customer.default_source.nil?
-        card = api_customer.sources.create(source: subscription.card_token)
+        card = api_customer.sources.create(source: token)
         api_customer.default_source = card.id
         api_customer.save
         return api_customer
