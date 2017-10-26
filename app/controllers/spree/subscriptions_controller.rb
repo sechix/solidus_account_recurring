@@ -26,7 +26,7 @@ module Spree
     end
 
     def destroy
-      if @subscription.unsubscribe
+      if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
         redirect_to '/account', notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
@@ -93,8 +93,7 @@ module Spree
 
     def load_object
 
-      # @user ||= spree_current_user
-      # authorize! params[:action].to_sym, @user
+
     end
 
     def authenticate_subscription

@@ -6,6 +6,7 @@ module Spree
       included do
         attr_accessor :card_token
         before_create :subscribe
+        before_update :unsubscribe, :if => [:unsubscribed_at_changed?, :unsubscribed_at?]
 
       end
 

@@ -1,4 +1,4 @@
-module Spree
+ module Spree
   class Recurring < Spree::Base
     class StripeRecurring < Spree::Recurring
       module ApiHandler
