@@ -17,20 +17,40 @@ module Spree
 
     def create
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: spree_current_user.id))
-      if @subscription.subscribe
-        redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
+      if @subscription.save_and_manage_api
+          @plan_points = @plan.points
+
+          unless @user.own_points.nil? 
+            @plan_points = @plan_points - @user.own_points
+          end
+          if @user.update_columns(available_points: @plan_points)
+            NotificationsMailer.subscription_created(@plan.name, @user, @plan_points).deliver_now
+            redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
+          else
+            flash[:error] = Spree.t(:error)
+            redirect_to '/account' and return
+           end  
       else
-        flash[:error] = Spree.t(:error)
-        redirect_to '/account' and return
+          flash[:error] = Spree.t(:error)
+          redirect_to '/account' and return
       end
     end
 
     def destroy
-      if @subscription.unsubscribe
-        redirect_to '/recurring/plans', notice: Spree.t(:subscription_canceled)
+      if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
+
+        if  @user.update_columns(available_points: 0)
+            NotificationsMailer.subscription_deleted(@plan.name, @user, @plan_points).deliver_now 
+            redirect_to '/account', notice: Spree.t(:subscription_canceled)
+ 
+        else
+            flash[:error] = Spree.t(:error)
+            redirect_to  '/account'
+        end
+        redirect_to '/account', notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
-        redirect_to  '/recurring/plans'
+        redirect_to  '/account'
       end
    
     end
@@ -38,14 +58,29 @@ module Spree
     def update
 
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
-
+              @plan_points_previous = Spree::Plan.active.where(id: @subscription.plan_id).first.points
+              @plan_points = @plan.points
+              if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
-                  flash[:notice] = Spree.t(:subscription_change)
-                  redirect_to '/account' and return
+                    unless @plan_points_previous.nil?
+                          @update_points = @user.available_points + @plan_points - @plan_points_previous
+                          if @user.update_columns(available_points: @update_points) && @plan_points.present? && @plan_points_previous.present?
+                              NotificationsMailer.subscription_updated(@event[:data][:object][:plan][:name], @user, @plan_points).deliver_now
+                              flash[:notice] = Spree.t(:subscription_change)
+                              redirect_to '/account' and return
+                          else
+                              flash[:error] = Spree.t(:error)
+                              redirect_to '/account'
+                          end 
+                    end
                  else
                   flash[:error] = Spree.t(:error)
                   redirect_to '/account'
                  end 
+              else
+                  flash[:error] = Spree.t(:error)
+                  redirect_to '/account'
+              end
            else
               flash[:error] = Spree.t(:error)
               redirect_to '/account'

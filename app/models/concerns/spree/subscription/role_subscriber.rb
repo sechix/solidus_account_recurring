@@ -3,6 +3,10 @@ module Spree
     module RoleSubscriber
       extend ActiveSupport::Concern
 
+      included do
+        before_create :add_role_subscriber, :unless => :unsubscribed_at?
+        before_update :remove_role_subscriber, :if => :unsubscribed_at?
+      end
 
       def add_role_subscriber 
             if role = subscriber_role
