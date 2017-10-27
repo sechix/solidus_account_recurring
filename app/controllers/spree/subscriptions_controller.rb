@@ -27,10 +27,10 @@ module Spree
 
     def destroy
       if @subscription.unsubscribe
-        redirect_to '/account', notice: Spree.t(:subscription_canceled)
+        redirect_to '/recurring/plans', notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
-        redirect_to  '/account'
+        redirect_to  '/recurring/plans'
       end
    
     end
