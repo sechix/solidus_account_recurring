@@ -41,16 +41,17 @@ module Spree
 
         if  spree_current_user.update_columns(available_points: 0)
             NotificationsMailer.subscription_deleted(@plan.name, spree_current_user, @plan_points).deliver_now 
-            redirect_to '/account', notice: Spree.t(:subscription_canceled)
+            flash[:notice] = Spree.t(:subscription_canceled)
+            redirect_to '/account' and return 
  
         else
             flash[:error] = Spree.t(:error)
-            redirect_to  '/account'
+            redirect_to  '/account' and return
         end
-        redirect_to '/account', notice: Spree.t(:subscription_canceled)
+
       else
         flash[:error] = Spree.t(:error)
-        redirect_to  '/account'
+        redirect_to  '/account' and return
       end
    
     end
