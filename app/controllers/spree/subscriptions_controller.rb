@@ -17,7 +17,7 @@ module Spree
 
     def create
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: spree_current_user.id))
-      if @subscription.save_and_manage_api
+      if @subscription.subscribe
         redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
       else
         flash[:error] = Spree.t(:error)
@@ -26,7 +26,7 @@ module Spree
     end
 
     def destroy
-      if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
+      if @subscription.unsubscribe
         redirect_to '/account', notice: Spree.t(:subscription_canceled)
       else
         flash[:error] = Spree.t(:error)
@@ -39,7 +39,6 @@ module Spree
 
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
 
-              if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
                   flash[:notice] = Spree.t(:subscription_change)
                   redirect_to '/account' and return
@@ -47,10 +46,6 @@ module Spree
                   flash[:error] = Spree.t(:error)
                   redirect_to '/account'
                  end 
-              else
-                  flash[:error] = Spree.t(:error)
-                  redirect_to '/account'
-              end
            else
               flash[:error] = Spree.t(:error)
               redirect_to '/account'
