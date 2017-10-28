@@ -16,14 +16,14 @@ module Spree
     end
 
     def create
-      @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: spree_current_user.id))
+      @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
       if @subscription.save_and_manage_api
           @plan_points = @plan.points
-
-          unless @user.own_points.nil? 
-            @plan_points = @plan_points - @user.own_points
+           
+          unless current_spree_user.own_points.nil? 
+            @plan_points = @plan_points - current_spree_user.own_points
           end
-          if spree_current_user.update_columns(available_points: @plan_points)
+          if current_spree_user.update_columns(available_points: @plan_points)
             redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
           else
             flash[:error] = Spree.t(:error)
@@ -37,7 +37,7 @@ module Spree
 
     def destroy
       if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
-        if  @user.update_columns(available_points: 0)
+        if  current_spree_user.updacurrent_spree_userte_columns(available_points: 0)
             redirect_to '/account', notice: Spree.t(:subscription_canceled)
         else
             flash[:error] = Spree.t(:error)
@@ -57,8 +57,8 @@ module Spree
               @plan_points = @plan.points
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
-                        @update_points = @user.available_points + @plan_points - @plan_points_previous
-                        if @user.update_columns(available_points: @update_points) && @plan_points.present? && @plan_points_previous.present?
+                        @update_points = current_spree_user.available_points + @plan_points - @plan_points_previous
+                        if current_spree_user.update_columns(available_points: @update_points) && @plan_points.present? && @plan_points_previous.present?
                             flash[:notice] = Spree.t(:subscription_change)
                             redirect_to '/account' and return
                         else
@@ -79,7 +79,7 @@ module Spree
            end       
     end
     def edit
-      @subscription = spree_current_user.subscriptions.undeleted.first 
+      @subscription = current_spree_user.subscriptions.undeleted.first 
       @plan = Spree::Plan.active.where(id: @subscription.plan_id).first  
 
     end
@@ -119,7 +119,7 @@ module Spree
     end
 
     def authenticate_subscription
-      if subscription = spree_current_user.subscriptions.undeleted.first
+      if subscription = current_spree_user.subscriptions.undeleted.first
         flash[:alert] = Spree.t(:already_subscribed)
         redirect_to '/account'
       end
