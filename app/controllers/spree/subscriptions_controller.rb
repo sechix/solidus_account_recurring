@@ -37,7 +37,7 @@ module Spree
 
     def destroy
       if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
-        if  current_spree_user.updacurrent_spree_userte_columns(available_points: 0)
+        if  current_spree_user.update_columns(available_points: 0)
             redirect_to '/account', notice: Spree.t(:subscription_canceled)
         else
             flash[:error] = Spree.t(:error)
