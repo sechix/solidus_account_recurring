@@ -40,32 +40,22 @@ module Spree
     def update
 
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
-              @plan_points_previous = Spree::Plan.active.where(id: @subscription.plan_id).first.points
-              @plan_points = @plan.points
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
-                    unless @plan_points_previous.nil?
-                          @update_points = spree_current_user.available_points + @plan_points - @plan_points_previous
-                          if spree_current_user.update_columns(available_points: @update_points) && @plan_points.present? && @plan_points_previous.present?
-                              NotificationsMailer.subscription_updated(@event[:data][:object][:plan][:name], spree_current_user, @plan_points).deliver_now
-                              flash[:notice] = Spree.t(:subscription_change)
-                              redirect_to '/account' and return
-                          else
-                              flash[:error] = Spree.t(:error)
-                              redirect_to '/account'
-                          end 
-                    end
+                      flash[:notice] = Spree.t(:subscription_change)
+                      redirect_to '/account' and return 
+                    
                  else
                   flash[:error] = Spree.t(:error)
-                  redirect_to '/account'
+                  redirect_to '/account' and return 
                  end 
               else
                   flash[:error] = Spree.t(:error)
-                  redirect_to '/account'
+                  redirect_to '/account' and return 
               end
            else
               flash[:error] = Spree.t(:error)
-              redirect_to '/account'
+              redirect_to '/account' and return 
            end       
     end
     def edit
