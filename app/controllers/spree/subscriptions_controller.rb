@@ -18,18 +18,8 @@ module Spree
     def create
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: spree_current_user.id))
       if @subscription.save_and_manage_api
-          @plan_points = @plan.points
+          redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
 
-          unless spree_current_user.own_points.nil? 
-            @plan_points = @plan_points - spree_current_user.own_points
-          end
-          if spree_current_user.update_columns(available_points: @plan_points)
-            NotificationsMailer.subscription_created(@plan.name, spree_current_user, @plan_points).deliver_now
-            redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
-          else
-            flash[:error] = Spree.t(:error)
-            redirect_to '/account' and return
-           end  
       else
           flash[:error] = Spree.t(:error)
           redirect_to '/account' and return
@@ -38,17 +28,8 @@ module Spree
 
     def destroy
       if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
-
-        if  spree_current_user.update_columns(available_points: 0)
-            NotificationsMailer.subscription_deleted(@plan.name, spree_current_user, @plan_points).deliver_now 
-            flash[:notice] = Spree.t(:subscription_canceled)
-            redirect_to '/account' and return 
- 
-        else
-            flash[:error] = Spree.t(:error)
-            redirect_to  '/account' and return
-        end
-
+        flash[:notice] = Spree.t(:subscription_canceled)
+        redirect_to '/account' and return 
       else
         flash[:error] = Spree.t(:error)
         redirect_to  '/account' and return
