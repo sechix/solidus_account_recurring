@@ -18,8 +18,17 @@ module Spree
     def create
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: spree_current_user.id))
       if @subscription.save_and_manage_api
-          redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
+          @plan_points = @plan.points
 
+          unless @user.own_points.nil? 
+            @plan_points = @plan_points - @user.own_points
+          end
+          if spree_current_user.update_columns(available_points: @plan_points)
+            redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
+          else
+            flash[:error] = Spree.t(:error)
+            redirect_to '/account' and return
+          end  
       else
           flash[:error] = Spree.t(:error)
           redirect_to '/account' and return
@@ -28,8 +37,12 @@ module Spree
 
     def destroy
       if @subscription.save_and_manage_api(unsubscribed_at: Time.current)
-        flash[:notice] = Spree.t(:subscription_canceled)
-        redirect_to '/account' and return 
+        if  @user.update_columns(available_points: 0)
+            redirect_to '/account', notice: Spree.t(:subscription_canceled)
+        else
+            flash[:error] = Spree.t(:error)
+            redirect_to  '/account' and return
+        end
       else
         flash[:error] = Spree.t(:error)
         redirect_to  '/account' and return
@@ -40,22 +53,29 @@ module Spree
     def update
 
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
+              @plan_points_previous = Spree::Plan.active.where(id: @subscription.plan_id).first.points
+              @plan_points = @plan.points
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
-                      flash[:notice] = Spree.t(:subscription_change)
-                      redirect_to '/account' and return 
-                    
+                        @update_points = @user.available_points + @plan_points - @plan_points_previous
+                        if @user.update_columns(available_points: @update_points) && @plan_points.present? && @plan_points_previous.present?
+                            flash[:notice] = Spree.t(:subscription_change)
+                            redirect_to '/account' and return
+                        else
+                            flash[:error] = Spree.t(:error)
+                            redirect_to '/account' and return
+                        end 
                  else
                   flash[:error] = Spree.t(:error)
-                  redirect_to '/account' and return 
+                  redirect_to '/account' and return
                  end 
               else
                   flash[:error] = Spree.t(:error)
-                  redirect_to '/account' and return 
+                  redirect_to '/account' and return
               end
            else
               flash[:error] = Spree.t(:error)
-              redirect_to '/account' and return 
+              redirect_to '/account' and return
            end       
     end
     def edit
@@ -70,21 +90,21 @@ module Spree
     def find_active_plan
       unless @plan = Spree::Plan.active.where(id: params[:plan_id]).first
         flash[:error] = Spree.t(:plan_not_found)
-        redirect_to '/account'
+        redirect_to '/account' and return
       end
     end
 
     def find_plan
       unless @plan = Spree::Plan.where(id: params[:plan_id]).first
         flash[:error] = Spree.t(:plan_not_found)
-        redirect_to '/account'
+        redirect_to '/account' and return
       end
     end
 
     def find_subscription
       unless @subscription = @plan.subscriptions.undeleted.where(id: params[:id]).first
         flash[:error] = Spree.t(:subscription_not_found)
-        redirect_to '/account'
+        redirect_to '/account' and return
       end
     end
 
