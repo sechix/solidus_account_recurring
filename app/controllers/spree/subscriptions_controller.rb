@@ -24,7 +24,7 @@ module Spree
             @plan_points = @plan_points - current_spree_user.own_points
           end
           if current_spree_user.update_columns(available_points: @plan_points)
-            redirect_to '/store/steps_subscribers' , notice: Spree.t(:thanks_for_subscribing) 
+            redirect_to '/subscribersteps' , notice: Spree.t(:thanks_for_subscribing)
           else
             flash[:error] = Spree.t(:error)
             redirect_to '/account' and return

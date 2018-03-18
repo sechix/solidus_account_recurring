@@ -1,15 +1,16 @@
 <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @subscription } %>
 
 <h2>Plan <%= @plan.name%> </h2>
-<h1>¡Tu primer box te espera!</h1>
+<h1>¡Tu primer envío te espera!</h1>
 <br/>
 
 <%= render 'spree/shared/planes_advantages' %>
+<%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
 
-<%= form_for @subscription, url: recurring_plan_subscriptions_url(@plan) do |f| %>
 
 
-  <%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
+  <%= form_for @subscription, url: recurring_plan_subscriptions_url(@plan) do |f| %>
+
 
   <div id="plan_<%= @plan.id %>_subscribe">
     <p class="field no-padding" data-hook="card_number">
