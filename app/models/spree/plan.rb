@@ -8,7 +8,7 @@ module Spree
     belongs_to :recurring
     has_many :subscriptions
 
-    validates :amount, :interval, :interval_count, :name, :description, :currency, :recurring_id, :api_plan_id, :points, :special_sales, presence: true
+    validates :amount, :interval, :interval_count, :name, :description, :currency, :recurring_id, :api_plan_id, :plan1, :plan2, :plan3, :special_sales, presence: true
     attr_readonly  :interval,  :id, :interval_count, :recurring_id, :api_plan_id
 
     before_validation :manage_default, if: :default_changed?

@@ -19,7 +19,9 @@
         <th><%= Spree.t(:shipping) %></th>
         <th><%= Spree.t(:sales) %></th>
         <th><%= Spree.t(:amount) %></th>
-        <th><%= Spree.t(:points) %></th>
+        <th><%= Spree.t(:plan1) %></th>
+        <th><%= Spree.t(:plan2) %></th>
+        <th><%= Spree.t(:plan3) %></th>
         <th><%= Spree.t(:interval) %></th>
         <th><%= Spree.t(:count) %></th>
         <th><%= Spree.t(:currency) %></th>
@@ -39,7 +41,9 @@
           <td><%= plan.free_shipping ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
           <td><%= plan.special_sales ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
           <td><%= plan.amount %></td>
-          <td><%= plan.points %></td>
+          <td><%= plan.plan1 %></td>
+          <td><%= plan.plan2 %></td>
+          <td><%= plan.plan3 %></td>
           <td><%= @recurring.class::INTERVAL[plan.interval.to_sym] %></td>
           <td><%= plan.interval_count %></td>
           <td><%= @recurring.class::CURRENCY[plan.currency.to_sym] %></td>
