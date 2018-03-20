@@ -15,9 +15,6 @@
         <th><%= Spree.t(:api_plan_id) %></th>
         <th><%= Spree.t(:name) %></th>
         <th><%= Spree.t(:description) %></th>
-        <th><%= Spree.t(:cleaning) %></th>
-        <th><%= Spree.t(:shipping) %></th>
-        <th><%= Spree.t(:sales) %></th>
         <th><%= Spree.t(:amount) %></th>
         <th><%= Spree.t(:plan1) %></th>
         <th><%= Spree.t(:plan2) %></th>
@@ -37,9 +34,6 @@
           <td><%= plan.api_plan_id %></td>
           <td><%= plan.name %></td>
           <td><%= plan.description %></td>
-          <td><%= plan.free_cleaning ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
-          <td><%= plan.free_shipping ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
-          <td><%= plan.special_sales ? Spree.t(:say_yes) : Spree.t(:say_no) %></td>
           <td><%= plan.amount %></td>
           <td><%= plan.plan1 %></td>
           <td><%= plan.plan2 %></td>
