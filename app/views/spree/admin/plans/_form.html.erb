@@ -48,6 +48,12 @@
       </div>
 
       <div class="form-group">
+        <%= f.label :pts, Spree.t(:valor) %>
+        <%= f.text_field :pts, :class => 'form-control'%>
+      </div>
+
+
+      <div class="form-group">
         <%= f.label :trial_period_days, Spree.t(:trial_period_days) %>
         <%= f.text_field :trial_period_days, :class => 'form-control' %>
       </div>
