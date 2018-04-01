@@ -50,7 +50,7 @@ module Spree
       end
 
       def plan_params(action=:create)
-          params.require(:plan).permit(:name, :description, :free_shipping, :free_cleaning, :trial_period_days, :interval, :currency, :amount, :active, :interval_count,:plan1,:plan2,:plan3, :special_sales, :default)
+          params.require(:plan).permit(:name, :description, :free_shipping, :free_cleaning, :trial_period_days, :interval, :currency, :amount, :active, :interval_count,:plan1,:plan2,:plan3, :pts, :special_sales, :default)
       end
 
       def find_plan
