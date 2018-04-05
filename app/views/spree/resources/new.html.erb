@@ -1,9 +1,6 @@
 <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @subscription } %>
 
 <h1>Cambiar tarjeta crédito/débido</h1>
-<br/>
-
-<%= render 'spree/shared/planes_advantages' %>
 
 <div class="edit_subscription">
 <%=  form_tag recurring_resources_path , method: :post do |f| %>
