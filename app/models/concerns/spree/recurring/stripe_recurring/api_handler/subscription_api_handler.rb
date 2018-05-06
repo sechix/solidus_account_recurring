@@ -9,7 +9,7 @@
             # Find or Create the customer
             customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
 
-            if use_existing_card == 'yes'
+            if subscription.use_existing_card == 'yes'
               wallet_payment_source = subscription.user.wallet.find(wallet_payment_source_id)
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
               customer.default_source = credit_card.gateway_customer_profile_id

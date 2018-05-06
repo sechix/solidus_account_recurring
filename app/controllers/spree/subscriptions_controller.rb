@@ -24,9 +24,9 @@ module Spree
     end
 
     def create
-      use_existing_card = params[:use_existing_card]
-      wallet_payment_source_id = params[:wallet_payment_source_id]
-      payment_source = params[:payment_source]
+      use_existing_card = params[:subscription][:use_existing_card]
+      wallet_payment_source_id = params[:order][:wallet_payment_source_id]
+      payment_source = params[:subscription][:payment_source]
 
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
       if @subscription.save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)

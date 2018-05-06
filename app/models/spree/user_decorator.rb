@@ -7,7 +7,7 @@ Spree::User.class_eval do
     default_wallet_payment_source = wallet_payment_sources.detect(&:default) ||
         wallet_payment_sources.first
 
-    if default_wallet_payment_source && !default_wallet_payment_source.gateway_customer_profile_id.nil?
+    if default_wallet_payment_source
       credit_card = Spree::CreditCard.find_by(id: default_wallet_payment_source.payment_source_id)
       credit_card.gateway_customer_profile_id
     else
