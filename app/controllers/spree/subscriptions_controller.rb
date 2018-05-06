@@ -125,7 +125,7 @@ module Spree
     end
 
     def subscription_params
-      params.require(:subscription).permit(:email, :card_token, :use_existing_card)
+      params.require(:subscription).permit(:email, :card_token, :use_existing_card, :payment_source, :wallet_payment_source_id)
     end
 
 
