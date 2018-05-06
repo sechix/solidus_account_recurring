@@ -8,7 +8,7 @@ Spree::User.class_eval do
         wallet_payment_sources.first
 
     if default_wallet_payment_source && !default_wallet_payment_source.gateway_customer_profile_id.nil?
-      credit_card = Spree::CreditCard.find_by(id: payment_source_id)
+      credit_card = Spree::CreditCard.find_by(id: default_wallet_payment_source.payment_source_id)
       credit_card.gateway_customer_profile_id
     else
       customer = Stripe::Customer.create(description: email, email: email)
