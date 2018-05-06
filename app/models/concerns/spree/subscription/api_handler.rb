@@ -5,12 +5,11 @@ module Spree
 
       included do
         attr_accessor :card_token
-        before_create :subscribe
         before_update :unsubscribe, :if => [:unsubscribed_at_changed?, :unsubscribed_at?]
       end
 
-      def subscribe
-        provider.subscribe(self)
+      def subscribe(use_existing_card, payment_source, wallet_payment_source_id)
+        provider.subscribe(self, use_existing_card, payment_source, wallet_payment_source_id)
         self.subscribed_at = Time.current
       end
 
@@ -30,7 +29,18 @@ module Spree
       def getcustomer
         provider.getcustomer(self)
       end
-      
+
+      def save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
+        begin
+          new_record? ? save : update_attributes(*args)
+        rescue provider.error_class, ActiveRecord::RecordNotFound => e
+          logger.error "Error while subscribing: #{e.message}"
+          errors.add :base, Spree.t(:problem_credit_card)
+          false
+        end
+        subscribe(use_existing_card, payment_source, wallet_payment_source_id)
+      end
+
 
       def save_and_manage_api(*args)
         begin
