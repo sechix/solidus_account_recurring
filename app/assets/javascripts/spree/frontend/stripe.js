@@ -18,11 +18,6 @@ mapCC = function(ccType){
 
 $(document).ready(function(){
 
-
-
-
-
-
   // For errors that happen later.
   Spree.stripePaymentMethod.prepend("<div id='stripeError' class='errorExplanation' style='display:none'></div>")
 
@@ -32,7 +27,9 @@ $(document).ready(function(){
 
   $('.continue').on('click', function(){
     $('#stripeError').hide();
-    if(Spree.stripePaymentMethod.is(':visible')){
+      alert('entra1');
+
+      if(Spree.stripePaymentMethod.is(':visible')){
       expiration = $('.cardExpiry:visible').payment('cardExpiryVal')
       params = {
           number: $('.cardNumber:visible').val(),
@@ -40,7 +37,6 @@ $(document).ready(function(){
           exp_month: expiration.month || 0,
           exp_year: expiration.year || 0
         };
-        alert('entra1');
       Stripe.card.createToken(params, stripeResponseHandler);
       return false;
     }
