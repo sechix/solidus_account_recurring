@@ -6,27 +6,34 @@
           def subscribe(subscription)
             raise_invalid_object_error(subscription, Spree::Subscription)
 
-
+            # Find or Create the customer
             customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
-            card = customer.sources.create(source: subscription.card_token)
-            customer.default_source = card.id
-            customer.save
+            if subscription.use_existing_card == 'yes'
+              wallet_payment_source = subscription.user.wallet.find(subscription.wallet_payment_source_id)
+              customer.default_source = wallet_payment_source.gateway_payment_profile_id
+              customer.save
+            else
+              card = customer.sources.create(source: subscription.card_token)
+              customer.default_source = card.id
+              customer.save
 
-            # Create credit card
+              if card
+                # Create credit card
+                method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
+                credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
+                                                    last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
+                                                    name: subscription.name, user_id: subscription.user.id, payment_method_id: subscription.payment_source.id)
+                credit_card.save!
 
-            credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
-                last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
-                                                name: subscription.name, user_id: subscription.user.id, payment_method_id: subscription.payment_method_id)
-            credit_card.save!
+                # Create wallet record
+                wallet_payment_source =  subscription.user.wallet.add(credit_card)
+                subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
+              end
+            end
 
-            # Create wallet record
-            wallet_payment_source =  subscription.user.wallet.add(credit_card)
-            subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
 
             # Create the subscription
             customer.subscriptions.create(plan: subscription.plan.api_plan_id)
-
-
           end
 
           def unsubscribe(subscription)
