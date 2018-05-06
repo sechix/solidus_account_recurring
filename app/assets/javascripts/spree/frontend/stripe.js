@@ -40,7 +40,7 @@ $(document).ready(function(){
           exp_month: expiration.month || 0,
           exp_year: expiration.year || 0
         };
-
+        alert('entra1');
       Stripe.card.createToken(params, stripeResponseHandler);
       return false;
     }
@@ -63,7 +63,7 @@ stripeResponseHandler = function(status, response){
       processing_error: "Ocurrió un error procesando la tarjeta",
       rate_limit:  "Ocurrió un error debido a consultar la API demasiado rápido. Por favor, avísanos si recibes este error continuamente"
     }
-
+alert('entra2');
 
   if(response.error){
     $('#stripeError').html(errorMessages[response.error.code]);

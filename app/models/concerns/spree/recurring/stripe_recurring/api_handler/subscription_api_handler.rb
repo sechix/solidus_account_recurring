@@ -12,7 +12,15 @@
             customer.default_source = card.id
             customer.save
 
-            wallet_payment_source =  subscription.user.wallet.add(self)
+            # Create credit card
+
+            credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
+                last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
+                                                name: subscription.name, user_id: subscription.user.id, payment_method_id: subscription.payment_method_id)
+            credit_card.save!
+
+            # Create wallet record
+            wallet_payment_source =  subscription.user.wallet.add(credit_card)
             subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
 
             # Create the subscription
