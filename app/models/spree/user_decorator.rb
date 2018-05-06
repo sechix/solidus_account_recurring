@@ -2,14 +2,18 @@ Spree::User.class_eval do
   has_many :subscriptions, class_name: "Spree::Subscription", foreign_key: "user_id"
 
   def find_or_create_stripe_customer(token=nil)
-    return api_customer if stripe_customer_id?
-    customer = if token
-      Stripe::Customer.create(description: email, email: email, card: token)
+
+    wallet_payment_sources = self.wallet.wallet_payment_sources
+    default_wallet_payment_source = wallet_payment_sources.detect(&:default) ||
+        wallet_payment_sources.first
+
+    if default_wallet_payment_source && !default_wallet_payment_source.gateway_customer_profile_id.nil?
+       default_wallet_payment_source.gateway_customer_profile_id
     else
-      Stripe::Customer.create(description: email, email: email)
+      customer = Stripe::Customer.create(description: email, email: email)
+      customer
     end
-    update_column(:stripe_customer_id, customer.id)
-    customer
+
   end
 
   def find_or_create_stripe_customer_2(token=nil)

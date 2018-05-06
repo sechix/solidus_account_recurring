@@ -5,16 +5,19 @@
         module SubscriptionApiHandler
           def subscribe(subscription)
             raise_invalid_object_error(subscription, Spree::Subscription)
-              if subscription.user.stripe_customer_id.nil?
-                customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
 
-              else
-                customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
-                card = customer.sources.create(source: subscription.card_token)               
-                customer.default_source = card.id
-                customer.save
-              end
+
+            customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
+            card = customer.sources.create(source: subscription.card_token)
+            customer.default_source = card.id
+            customer.save
+
+            wallet_payment_source =  subscription.user.wallet.add(self)
+            subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
+
+            # Create the subscription
             customer.subscriptions.create(plan: subscription.plan.api_plan_id)
+
 
           end
 

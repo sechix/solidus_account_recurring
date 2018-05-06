@@ -8,7 +8,15 @@ module Spree
     before_action :payment_method, only: [:new]
 
     def new
-      @subscription = @plan.subscriptions.build  
+      @subscription = @plan.subscriptions.build
+      if try_spree_current_user && try_spree_current_user.respond_to?(:wallet)
+        @wallet_payment_sources = try_spree_current_user.wallet.wallet_payment_sources
+        @default_wallet_payment_source = @wallet_payment_sources.detect(&:default) ||
+            @wallet_payment_sources.first
+        # TODO: How can we deprecate this instance variable?  We could try
+        # wrapping it in a delegating object that produces deprecation warnings.
+        @payment_sources = try_spree_current_user.wallet.wallet_payment_sources.map(&:payment_source).select { |ps| ps.is_a?(Spree::CreditCard) }
+      end
     end
 
     def payment_method
@@ -16,6 +24,7 @@ module Spree
     end
 
     def create
+
       @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
       if @subscription.save_and_manage_api
           @plan_plan1 = @plan.plan1
