@@ -32,8 +32,8 @@ module Spree
 
       def save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
         begin
-          new_record? ? save : update_attributes(*args)
           subscribe(use_existing_card, payment_source, wallet_payment_source_id)
+          new_record? ? save : update_attributes(*args)
         rescue provider.error_class, ActiveRecord::RecordNotFound => e
           logger.error "Error while subscribing: #{e.message}"
           errors.add :base, Spree.t(:problem_credit_card)

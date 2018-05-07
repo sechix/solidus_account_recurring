@@ -9,7 +9,7 @@
             # Find or Create the customer
             customer = subscription.user.find_or_create_stripe_customer(subscription.card_token)
 
-            if subscription.use_existing_card == 'yes'
+            if use_existing_card == 'yes'
               wallet_payment_source = subscription.user.wallet.find(wallet_payment_source_id)
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
               customer.default_source = credit_card.gateway_customer_profile_id
@@ -25,7 +25,7 @@
                 method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
                 credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
                                                     last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
-                                                    name: subscription.name, user_id: subscription.user.id, payment_method_id: payment_source.id)
+                                                    name: subscription.name, user_id: subscription.user.id, payment_method_id: payment_source)
                 credit_card.save!
 
                 # Create wallet record
