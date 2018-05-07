@@ -20,12 +20,12 @@
 
               payment_source.each do |payment_source|
                 payment_source_id = payment_source
-                payment_source_name = payment_source[:name]
                 payment_source.each do |key, value|
-                  value_o = value
+                  if key == "name"
+                    payment_source_name = value
+                  end
                 end
               end
-              1 + subscription.user
               # Create credit card
               if card
                 method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
