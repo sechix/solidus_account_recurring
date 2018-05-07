@@ -7,8 +7,7 @@
             raise_invalid_object_error(subscription, Spree::Subscription)
 
             # Find or Create the customer
-            customer_id = subscription.user.find_or_create_stripe_customer(subscription.token)
-            customer = Stripe::Customer.retrieve(customer_id)
+            customer = subscription.user.find_or_create_stripe_customer(subscription.token)
             if use_existing_card == 'yes'
               wallet_payment_source = subscription.user.wallet.find(wallet_payment_source_id)
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
@@ -60,8 +59,7 @@
             raise_invalid_object_error(subscription, Spree::Subscription)
 
             # Find or Create the customer
-            customer_id = subscription.user.find_or_create_stripe_customer(subscription.token)
-            customer = Stripe::Customer.retrieve(customer_id)
+            customer = subscription.user.find_or_create_stripe_customer(subscription.token)
             if use_existing_card == 'yes'
               wallet_payment_source = subscription.user.wallet.find(wallet_payment_source_id)
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
@@ -96,7 +94,7 @@
           end
           def getcustomer(subscription)
             raise_invalid_object_error(subscription, Spree::Subscription) 
-            customer = Stripe::Customer.retrieve(subscription.user.find_or_create_stripe_customer)
+            customer = subscription.user.find_or_create_stripe_customer
             @card = customer.default_source;
           end
 

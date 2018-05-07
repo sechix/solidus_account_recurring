@@ -29,7 +29,8 @@ module Spree
     end
 
     def find_subscription
-      render_status_ok unless  @subscription = Spree::User.find_by(stripe_customer_id: event[:data][:object][:customer]).subscriptions
+      credit_card = Spree::CreditCard.find_by(gateway_customer_profile_id = event[:data][:object][:customer], default: true)
+      render_status_ok unless  @subscription = Spree::User.find_by(id: credit_card.user_id).subscriptions
     end
 
     def retrieve_api_event

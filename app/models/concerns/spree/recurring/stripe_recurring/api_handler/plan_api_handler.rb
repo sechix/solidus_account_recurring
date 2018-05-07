@@ -46,7 +46,7 @@ module Spree
           end
 
           def get_customer
-            Stripe::Customer.retrieve(spree_current_user.find_or_create_stripe_customer)
+            spree_current_user.find_or_create_stripe_customer
           end
         end
       end

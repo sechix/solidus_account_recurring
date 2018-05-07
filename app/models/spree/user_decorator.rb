@@ -9,10 +9,12 @@ Spree::User.class_eval do
 
     if default_wallet_payment_source
       credit_card = Spree::CreditCard.find_by(id: default_wallet_payment_source.payment_source_id)
-      credit_card.gateway_customer_profile_id
+
+      customer = Stripe::Customer.retrieve(credit_card.gateway_customer_profile_id)
+      return customer
     else
       customer = Stripe::Customer.create(description: email, email: email)
-      customer.id
+      return customer
     end
 
   end
