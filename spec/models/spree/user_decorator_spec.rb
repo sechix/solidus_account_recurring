@@ -8,7 +8,7 @@ describe Spree::User do
   it { should have_many :subscriptions }
 
   describe '#find_or_create_stripe_customer' do
-    let(:token) { 'stripe_test_card_token' }
+    let(:token) { 'stripe_test_token' }
 
     before(:each) do
       StripeMock.start

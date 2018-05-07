@@ -30,18 +30,22 @@ module Spree
       @subscription = spree_current_user.subscriptions.undeleted.first 
       @plan = Spree::Plan.active.where(id: @subscription.plan_id).first
 
+      use_existing_card = params[:subscription].present?  ? params[:subscription][:use_existing_card]: 'not'
+      wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
+      payment_source = params[:subscription].present?  ? params[:subscription][:payment_source][:use_existing_card]: nil
 
-
-      @subscription = Subscription.create(subscription_params)
-      @subscription.plan_id = @plan.id
-      @subscription.user_id = spree_current_user.id
-        if @subscription.changecard
-          flash[:notice] = Spree.t(:subscription_card_change)
-          redirect_to '/account' and return
-        else
-          flash[:error] = Spree.t(:error)
-          redirect_to request.path and return
-        end
+            @subscription = Subscription.create(subscription_params)
+            @subscription.plan_id = @plan.id
+            @subscription.user_id = spree_current_user.id
+              if @subscription.changecard(use_existing_card, payment_source, wallet_payment_source_id)
+                flash[:error] = Spree.t(:error)
+                name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+                redirect_to name_plan and return
+              else
+                flash[:error] = Spree.t(:error)
+                name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+                redirect_to name_plan and return
+              end
 
     end
 
@@ -49,7 +53,7 @@ module Spree
 
 
     def subscription_params
-      params.require(:subscription).permit(:email, :card_token)
+      params.require(:subscription).permit(:email, :token)
       # :use_existing_card, :payment_source, :wallet_payment_source_id
     end
 

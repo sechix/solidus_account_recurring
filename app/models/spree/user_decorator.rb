@@ -12,20 +12,9 @@ Spree::User.class_eval do
       credit_card.gateway_customer_profile_id
     else
       customer = Stripe::Customer.create(description: email, email: email)
-      customer
+      customer.id
     end
 
   end
 
-  def find_or_create_stripe_customer_2(token=nil)
-    return api_customer if stripe_customer_id?
-  end
-
-  def find_stripe_customer
-    return api_customer if stripe_customer_id?
-  end
-
-  def api_customer
-    Stripe::Customer.retrieve(stripe_customer_id)
-  end
 end

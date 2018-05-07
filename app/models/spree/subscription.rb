@@ -5,7 +5,7 @@ module Spree
     include ApiHandler
 
     acts_as_restrictive_destroyer column: :unsubscribed_at
-    attr_accessor :card_token
+    attr_accessor :token
 
     self.whitelisted_ransackable_attributes = %w[email subscribed_at]
 

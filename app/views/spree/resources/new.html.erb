@@ -5,44 +5,107 @@
 <div class="edit_subscription">
 <%=  form_tag recurring_resources_path , method: :post do |f| %>
 
-  <%= image_tag 'credit_cards/credit_card.gif', :id => 'credit-card-image' %>
+    <!------------------------------------------------------------------------------------------->
+    <!--Begin of payment      -->
+    <!------------------------------------------------------------------------------------------->
 
-  <div id="plan_<%= @plan.id %>_subscribe">
-    <p class="field no-padding" data-hook="card_number">
-      <%= label_tag "card_number", Spree.t(:card_number) %><span class="required">*</span><br />
-      <% options_hash = Rails.env.production? ? {:autocomplete => 'off'} : {} %>
-      <%= text_field_tag "card_number", '', options_hash.merge(:id => 'card_number', :class => 'required cardNumber', :size => 19, :maxlength => 19, :autocomplete => "off") %>
-      &nbsp;
-      <span id="card_type" style="display:none;">
-        ( <span id="looks_like" ><%= Spree.t(:card_type_is) %> <span id="type"></span></span>
-          <span id="unrecognized"><%= Spree.t(:unrecognized_card_type) %></span>
-        )
-      </span>
-    </p>
-    <p class="field no-padding" data-hook="card_expiration">
-      <%= label_tag "card_expiry", Spree.t(:expiration) %><span class="required">*</span><br />
-      <%= text_field_tag "card_expiry", '', :id => 'card_expiry', :class => "required cardExpiry", :placeholder => "MM / YY" %>
-    </p>
-    <p class="field no-padding" data-hook="card_code">
-      <%= label_tag "card_code", Spree.t(:card_code) %><span class="required">*</span><br />
-      <%= text_field_tag "card_code", '', options_hash.merge(:id => 'card_code', :class => 'required cardCode', :size => 5) %>
-      <a target="_blank" data-hook="cvv_link" id="cvv_link" href="/content/cvv">(¿Qué es esto?)</a>
-    </p>
-  </div>
-  
-  <%= button_tag Spree.t(:change), class: 'continue button primary', :id => "button_pay" %>
+
+    <fieldset id="payment"  class="fadeIn animated" data-hook>
+      <legend align="center"><%= t('spree.payment_information') %></legend>
+      <div data-hook="checkout_payment_step" id="payment_method_<%= @payment_method.id %>">
+        <% if @wallet_payment_sources.present? %>
+          <div class="card_options">
+            <%= radio_button_tag 'subscription[use_existing_card]', 'yes', true %>
+            <label for="subscription_use_existing_card_yes">
+              <%= t('spree.use_existing_cc') %>
+            </label>
+            <br/>
+            <%= radio_button_tag 'subscription[use_existing_card]', 'no' %>
+            <label for="subscription_use_existing_card_no">
+              <%= t('spree.use_new_cc_or_payment_method') %>
+            </label>
+          </div>
+
+          <div id="existing_cards">
+            <p class="field" data-hook="existing_cards">
+            <table class="existing-credit-card-list">
+              <tbody>
+              <% @wallet_payment_sources.each do |wallet_payment_source| %>
+                <%=
+                  render(
+                      partial: "spree/checkout/existing_payment/#{wallet_payment_source.payment_source.payment_method.partial_name}",
+                      locals: {
+                          wallet_payment_source: wallet_payment_source,
+                          default: wallet_payment_source == @default_wallet_payment_source,
+                      }
+                  )
+                %>
+              <% end %>
+              </tbody>
+            </table>
+            </p>
+          </div>
+        <% end %>
+
+        <div id="payment-method-fields" data-hook>
+          <% method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil) %>
+          <p>
+            <label>
+              <%= radio_button_tag "payment_method_id", method.id%>
+              <%= t(method.name, default: method.name) %>
+            </label>
+          </p>
+        </div>
+
+        <ul id="payment-methods" data-hook>
+          <li id="payment_method_stripe" data-hook>
+            <fieldset>
+              <%= render partial: "spree/checkout/payment/stripe_subscriptions", locals: { payment_method: Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil) } %>
+            </fieldset>
+          </li>
+        </ul>
+        <br style="clear:both;" />
+        <!--<p class='field' data-hook='coupon_code'>-->
+        <!--%= f.label :coupon_code %><br />-->
+        <!--%= f.text_field :coupon_code %>-->
+        <!--<button type="button" class="button" id="coupon-code-apply-button">-->
+        <!--%= t('spree.apply_code') %>-->
+        <!--</button>-->
+
+        <!--</p>-->
+        <div id='coupon_status'></div>
+
+      </div>
+    </fieldset>
+
+    <br class="space" />
+
+    <div class="text-align-center">
+      <%= check_box_tag :accept_terms_and_conditions  ,'accepted',false %>
+
+      <%= label_tag :accept_terms_and_conditions, Spree.t(:acepto) %>
+      <a href="/store/use-conditions" >las condiciones de uso</a></div>
+
+    <%= button_tag Spree.t(:subscribe), class: 'continue button primary', :id => "button_pay" %>
+
+    <!------------------------------------------------------------------------------------------->
+    <!--end of payment-->
+    <!------------------------------------------------------------------------------------------->
 
 <% end %>
 </div>
 
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-<script type="text/javascript">Stripe.setPublishableKey("<%= @plan.provider.preferred_public_key %>");</script>
+<!--<script type="text/javascript">Stripe.setPublishableKey("%= @plan.provider.preferred_public_key %>");</script>-->
 <script>Spree.stripePaymentMethod = $('#plan_' + <%= @plan.id %> + '_subscribe')</script>
 <%= javascript_include_tag "spree/frontend/stripe" %>
 
 
 <script type="text/javascript">
+    $(document).ready(function () {
+        $('#button_pay').prop('disabled', true);
 
+    });
     
 $(document).ready(function () {
 
@@ -50,28 +113,39 @@ $(document).ready(function () {
     $("#order-total").hide();
  });
 
- $("#add_assegurance").click(function () {
-            if ($(this).is(":checked")) {
-                $("#assegurance_total").show();
-                $("#order-total-assegurance").show();
-                $("#order-total").hide();
+    $(document).ready(function () {
+        $('#button_pay').prop('disabled', true);
 
-                
-  } else {
-                $("#assegurance_total").hide();
-                $("#order-total-assegurance").hide();
-                $("#order-total").show();
-            }
-  });
-
-   $('#add_assegurance').change(function() {
-     if (this.checked) {
-       alert(this.value())
-      /* is_completed should be true */
-     } 
-   });
+    });
 
 
+    $(document).ready(function () {
+
+        if ($("#subscription_use_existing_card_yes").is(":checked")){
+            $("#payment-method-fields").hide();
+            $("#payment-methods").hide();
+
+        } else {
+            $("#payment-method-fields").show();
+            $("#payment-methods").show();
+            $("input[name='payment_method_id']").prop( "checked", true );
+
+        }
+
+        $('#subscription_use_existing_card_no').on('click',function(){
+            $("#payment-method-fields").show();
+            $("#payment-methods").show();
+            $("input[name='payment_method_id']").prop( "checked", true );
+
+        });
+        $('#subscription_use_existing_card_yes').on('click',function(){
+            $("#payment-method-fields").hide();
+            $("#payment-methods").hide();
+        });
+
+
+
+    });
 
 
 </script>

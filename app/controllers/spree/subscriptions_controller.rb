@@ -24,28 +24,30 @@ module Spree
     end
 
     def create
-      use_existing_card = params[:subscription][:use_existing_card]
-      wallet_payment_source_id = params[:order][:wallet_payment_source_id]
-      payment_source = params[:subscription][:payment_source]
+      use_existing_card = params[:subscription].present?  ? params[:subscription][:use_existing_card]: 'not'
+      wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
+      payment_source = params[:subscription].present?  ? params[:subscription][:payment_source][:use_existing_card]: nil
 
-      @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
-      if @subscription.save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
-          @plan_plan1 = @plan.plan1
-          @plan_plan2 = @plan.plan2
-          @plan_plan3 = @plan.plan3
+          @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
+          if @subscription.save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
+              @plan_plan1 = @plan.plan1
+              @plan_plan2 = @plan.plan2
+              @plan_plan3 = @plan.plan3
 
-          if current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan_plan1) &&
-             current_spree_user.update_columns(available_plan2: current_spree_user.available_plan2 + @plan_plan2) &&
-             current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan_plan3)
-                redirect_to '/subscribersteps' , notice: Spree.t(:thanks_for_subscribing)
+              if current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan_plan1) &&
+                 current_spree_user.update_columns(available_plan2: current_spree_user.available_plan2 + @plan_plan2) &&
+                 current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan_plan3)
+                    redirect_to '/subscribersteps' , notice: Spree.t(:thanks_for_subscribing)
+              else
+                flash[:error] = Spree.t(:error)
+                name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+                redirect_to name_plan and return
+              end
           else
-            flash[:error] = Spree.t(:error)
-            redirect_to '/account' and return
-          end  
-      else
-          flash[:error] = Spree.t(:error)
-          redirect_to '/account' and return
-      end
+              flash[:error] = Spree.t(:error)
+              name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+              redirect_to name_plan and return
+          end
     end
 
     def destroy
@@ -134,7 +136,7 @@ module Spree
     end
 
     def subscription_params
-      params.require(:subscription).permit(:email, :card_token)
+      params.require(:subscription).permit(:email, :token)
     end
 
 

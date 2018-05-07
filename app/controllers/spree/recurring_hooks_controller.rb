@@ -37,7 +37,7 @@ module Spree
     end
 
     def subscription_event_params
-      if retrieve_api_event && event.data.object.customer == @subscription.user.stripe_customer_id
+      if retrieve_api_event && event.data.object.customer == @subscription.user.find_or_create_stripe_customer
         { event_id: event.id, request_type: event.type, response: event.to_json }
       else
         {}

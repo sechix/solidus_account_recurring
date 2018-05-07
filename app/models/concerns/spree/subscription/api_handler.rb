@@ -4,7 +4,7 @@ module Spree
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :card_token
+        attr_accessor :token
         before_update :unsubscribe, :if => [:unsubscribed_at_changed?, :unsubscribed_at?]
       end
 
@@ -21,9 +21,9 @@ module Spree
         provider.update(self, api_plan_id)
       end
 
-      def changecard
-        card_token = self.card_token
-        provider.changecard(self,card_token)
+      def changecard(use_existing_card, payment_source, wallet_payment_source_id)
+        token = self.token
+        provider.changecard(self, token, use_existing_card, payment_source, wallet_payment_source_id)
       end
       
       def getcustomer
