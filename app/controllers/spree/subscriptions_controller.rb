@@ -10,7 +10,7 @@ module Spree
     def new
       if @user_subscriptions.present?
         flash[:error] = Spree.t(:already_have_subscription)
-        redirect_to '/account#myplans' and return
+        redirect_to '/account#myplans'
       else
         @subscription = @plan.subscriptions.build
         if try_spree_current_user && try_spree_current_user.respond_to?(:wallet)
