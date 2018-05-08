@@ -8,8 +8,6 @@
     <!------------------------------------------------------------------------------------------->
     <!--Begin of payment      -->
     <!------------------------------------------------------------------------------------------->
-
-
     <fieldset id="payment"  class="fadeIn animated" data-hook>
       <legend align="center"><%= t('spree.payment_information') %></legend>
       <div data-hook="checkout_payment_step" id="payment_method_<%= @payment_method.id %>">
@@ -124,8 +122,10 @@ $(document).ready(function () {
         if ($("#subscription_use_existing_card_yes").is(":checked")){
             $("#payment-method-fields").hide();
             $("#payment-methods").hide();
+            $("#existing_cards").show();
 
         } else {
+            $("#existing_cards").hide();
             $("#payment-method-fields").show();
             $("#payment-methods").show();
             $("input[name='payment_method_id']").prop( "checked", true );
@@ -136,15 +136,14 @@ $(document).ready(function () {
             $("#payment-method-fields").show();
             $("#payment-methods").show();
             $("input[name='payment_method_id']").prop( "checked", true );
+            $("#existing_cards").hide();
 
         });
         $('#subscription_use_existing_card_yes').on('click',function(){
             $("#payment-method-fields").hide();
             $("#payment-methods").hide();
+            $("#existing_cards").show();
         });
-
-
-
     });
 
 

@@ -8,15 +8,21 @@ module Spree
     before_action :payment_method, only: [:new]
 
     def new
-      @subscription = @plan.subscriptions.build
-      if try_spree_current_user && try_spree_current_user.respond_to?(:wallet)
-        @wallet_payment_sources = try_spree_current_user.wallet.wallet_payment_sources
-        @default_wallet_payment_source = @wallet_payment_sources.detect(&:default) ||
-            @wallet_payment_sources.first
-        # TODO: How can we deprecate this instance variable?  We could try
-        # wrapping it in a delegating object that produces deprecation warnings.
-        @payment_sources = try_spree_current_user.wallet.wallet_payment_sources.map(&:payment_source).select { |ps| ps.is_a?(Spree::CreditCard) }
+      if @user_subscriptions.present?
+        flash[:error] = Spree.t(:already_have_subscription)
+        redirect_to '/account#myplans' and return
+      else
+        @subscription = @plan.subscriptions.build
+        if try_spree_current_user && try_spree_current_user.respond_to?(:wallet)
+          @wallet_payment_sources = try_spree_current_user.wallet.wallet_payment_sources
+          @default_wallet_payment_source = @wallet_payment_sources.detect(&:default) ||
+              @wallet_payment_sources.first
+          # TODO: How can we deprecate this instance variable?  We could try
+          # wrapping it in a delegating object that produces deprecation warnings.
+          @payment_sources = try_spree_current_user.wallet.wallet_payment_sources.map(&:payment_source).select { |ps| ps.is_a?(Spree::CreditCard) }
+        end
       end
+
     end
 
     def payment_method
@@ -24,7 +30,7 @@ module Spree
     end
 
     def create
-      use_existing_card = params[:use_existing_card].present?  ? params[:use_existing_card]: 'not'
+      use_existing_card = params[:subscription][:use_existing_card].present?  ? params[:subscription][:use_existing_card]: 'not'
       wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
       payment_source = params[:payment_source].present?  ? params[:payment_source]: nil
 

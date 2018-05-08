@@ -30,7 +30,7 @@ module Spree
       @subscription = spree_current_user.subscriptions.undeleted.first 
       @plan = Spree::Plan.active.where(id: @subscription.plan_id).first
 
-      use_existing_card = params[:use_existing_card].present?  ? params[:use_existing_card]: 'not'
+      use_existing_card = params[:subscription][:use_existing_card].present?  ? params[:subscription][:use_existing_card]: 'not'
       wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
       payment_source = params[:payment_source].present?  ? params[:payment_source]: nil
 
