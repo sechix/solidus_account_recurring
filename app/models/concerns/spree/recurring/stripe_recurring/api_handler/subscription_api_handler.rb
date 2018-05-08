@@ -18,14 +18,8 @@
               customer.default_source = card.id
               customer.save
 
-              payment_source.each do |payment_source|
-                payment_source_id = payment_source
-                payment_source.each do |key, value|
-                  if key == "name"
-                    payment_source_name = value
-                  end
-                end
-              end
+              payment_source_id = payment_source.keys[0][:name]
+              payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
                 method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
@@ -66,17 +60,12 @@
               customer.default_source = credit_card.gateway_payment_profile_id
               customer.save
             else
-              card = customer.sources.create(source: token)
+              card = customer.sources.create(source: subscription.token)
               customer.default_source = card.id
               customer.save
 
-              payment_source.each do |payment_source|
-                payment_source_id = payment_source
-                payment_source_name = payment_source[:name]
-                payment_source.each do |key, value|
-                  value_o = value
-                end
-              end
+              payment_source_id = payment_source.keys[0][:name]
+              payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
                 method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
