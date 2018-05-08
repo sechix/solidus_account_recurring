@@ -75,6 +75,10 @@ module Spree
     end
 
     def update
+      if !current_spree_user.month_order_done
+        flash[:error] = Spree.t(:no_change_plan_order_done)
+        redirect_to '/account#myplans' and return
+      else
 
           if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
               # @plan_points_previous = Spree::Plan.active.where(id: @subscription.plan_id).first.points
@@ -109,7 +113,8 @@ module Spree
            else
               flash[:error] = Spree.t(:error)
               redirect_to '/account' and return
-           end       
+          end
+        end
     end
     def edit
       @subscription = current_spree_user.subscriptions.undeleted.first 
