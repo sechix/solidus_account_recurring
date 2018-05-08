@@ -30,17 +30,13 @@ module Spree
       end
 
       def save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
-        begin
           subscribe(use_existing_card, payment_source, wallet_payment_source_id)
-          self.subscribed_at = Time.current
-          self.user_id = spree_current_user.id
-          self.email = spree_current_user.email
-          new_record? ? save!
-        rescue provider.error_class, ActiveRecord::RecordNotFound => e
-          logger.error "Error while subscribing: #{e.message}"
-          errors.add :base, Spree.t(:problem_credit_card)
-          false
-        end
+          @subscription = Spree::Subscription.new(subscribed_at: Time.current, user_id: spree_current_user.id, email: spree_current_user.email )
+          @subscription.save!
+          rescue provider.error_class, ActiveRecord::RecordNotFound => e
+            logger.error "Error while subscribing: #{e.message}"
+            errors.add :base, Spree.t(:problem_credit_card)
+            false
       end
 
 
