@@ -18,7 +18,7 @@
               customer.default_source = card.id
               customer.save
 
-              payment_source_id = payment_source.keys[0][:name]
+              payment_source_id = payment_source.keys[0]
               payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
@@ -64,7 +64,7 @@
               customer.default_source = card.id
               customer.save
 
-              payment_source_id = payment_source.keys[0][:name]
+              payment_source_id = payment_source.keys[0]
               payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
