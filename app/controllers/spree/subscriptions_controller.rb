@@ -8,9 +8,9 @@ module Spree
     before_action :payment_method, only: [:new]
 
     def new
-      if @user_subscriptions.present?
+      if @user_subscriptions.present? or try_spree_current_user.try(:has_spree_role?, "subscriber")
         flash[:error] = Spree.t(:already_have_subscription)
-        redirect_to '/account#myplans'
+        redirect_to '/account#my_plans'
       else
         @subscription = @plan.subscriptions.build
         if try_spree_current_user && try_spree_current_user.respond_to?(:wallet)
@@ -30,19 +30,20 @@ module Spree
     end
 
     def create
-      use_existing_card = params[:subscription][:use_existing_card].present?  ? params[:subscription][:use_existing_card]: 'not'
+      use_existing_card = params[:use_existing_card].present?  ? params[:use_existing_card]: 'not'
       wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
       payment_source = params[:payment_source].present?  ? params[:payment_source]: nil
 
           @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
-          if @subscription.save_and_manage_api_3(use_existing_card, payment_source, wallet_payment_source_id)
+          if @subscription.subscribe(use_existing_card, payment_source, wallet_payment_source_id)  && @subscription.save_and_manage_api_3
               @plan_plan1 = @plan.plan1
               @plan_plan2 = @plan.plan2
               @plan_plan3 = @plan.plan3
 
               if current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan_plan1) &&
                  current_spree_user.update_columns(available_plan2: current_spree_user.available_plan2 + @plan_plan2) &&
-                 current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan_plan3)
+                 current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan_plan3) &&
+                 current_spree_user.update_columns(month_order_done: false)
                     redirect_to '/subscribersteps' , notice: Spree.t(:thanks_for_subscribing)
               else
                 flash[:error] = Spree.t(:error)
@@ -77,10 +78,10 @@ module Spree
     def update
       if !current_spree_user.month_order_done
         flash[:error] = Spree.t(:no_change_plan_order_done)
-        redirect_to '/account#myplans' and return
+        redirect_to '/account#my_plans' and return
       else
-
-          if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
+        @plan = Spree::Plan.active.where(id: params[:plan_id]).first
+        if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
               # @plan_points_previous = Spree::Plan.active.where(id: @subscription.plan_id).first.points
               plan_plan1 = @plan.plan1
               plan_plan2 = @plan.plan2
@@ -117,8 +118,7 @@ module Spree
         end
     end
     def edit
-      @subscription = current_spree_user.subscriptions.undeleted.first 
-      @plan = Spree::Plan.active.where(id: @subscription.plan_id).first  
+
 
     end
 

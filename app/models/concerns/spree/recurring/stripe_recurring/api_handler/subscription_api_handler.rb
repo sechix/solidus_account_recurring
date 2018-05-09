@@ -13,6 +13,8 @@
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
               customer.default_source = credit_card.gateway_payment_profile_id
               customer.save
+
+              subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
             else
               card = customer.sources.create(source: subscription.token)
               customer.default_source = card.id
@@ -59,6 +61,8 @@
               credit_card = Spree::CreditCard.find_by(id: wallet_payment_source.payment_source_id)
               customer.default_source = credit_card.gateway_payment_profile_id
               customer.save
+
+              subscription.user.wallet.default_wallet_payment_source = wallet_payment_source
             else
               card = customer.sources.create(source: subscription.token)
               customer.default_source = card.id

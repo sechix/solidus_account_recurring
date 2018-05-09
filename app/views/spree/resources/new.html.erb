@@ -13,13 +13,13 @@
       <div data-hook="checkout_payment_step" id="payment_method_<%= @payment_method.id %>">
         <% if @wallet_payment_sources.present? %>
           <div class="card_options">
-            <%= radio_button_tag 'subscription[use_existing_card]', 'yes', true %>
-            <label for="subscription_use_existing_card_yes">
+            <%= radio_button_tag 'use_existing_card', 'yes', true %>
+            <label for="use_existing_card_yes">
               <%= t('spree.use_existing_cc') %>
             </label>
             <br/>
-            <%= radio_button_tag 'subscription[use_existing_card]', 'no' %>
-            <label for="subscription_use_existing_card_no">
+            <%= radio_button_tag 'use_existing_card', 'no' %>
+            <label for="use_existing_card_no">
               <%= t('spree.use_new_cc_or_payment_method') %>
             </label>
           </div>
@@ -93,12 +93,6 @@
 <% end %>
 </div>
 
-<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
-<!--<script type="text/javascript">Stripe.setPublishableKey("%= @plan.provider.preferred_public_key %>");</script>-->
-<script>Spree.stripePaymentMethod = $('#plan_' + <%= @plan.id %> + '_subscribe')</script>
-<%= javascript_include_tag "spree/frontend/stripe" %>
-
-
 <script type="text/javascript">
     $(document).ready(function () {
         $('#button_pay').prop('disabled', true);
@@ -119,7 +113,7 @@ $(document).ready(function () {
 
     $(document).ready(function () {
 
-        if ($("#subscription_use_existing_card_yes").is(":checked")){
+        if ($("#use_existing_card_yes").is(":checked")){
             $("#payment-method-fields").hide();
             $("#payment-methods").hide();
             $("#existing_cards").show();
@@ -132,14 +126,14 @@ $(document).ready(function () {
 
         }
 
-        $('#subscription_use_existing_card_no').on('click',function(){
+        $('#use_existing_card_no').on('click',function(){
             $("#payment-method-fields").show();
             $("#payment-methods").show();
             $("input[name='payment_method_id']").prop( "checked", true );
             $("#existing_cards").hide();
 
         });
-        $('#subscription_use_existing_card_yes').on('click',function(){
+        $('#use_existing_card_yes').on('click',function(){
             $("#payment-method-fields").hide();
             $("#payment-methods").hide();
             $("#existing_cards").show();

@@ -25,7 +25,6 @@ Spree::Core::Engine.routes.draw do
          get :getcustomer , on: :collection 
       end
   end 
-  get 'recurring/resources', :to => 'resources#create' 
-
+  get 'recurring/resources', :to => 'resources#create'
 
 end

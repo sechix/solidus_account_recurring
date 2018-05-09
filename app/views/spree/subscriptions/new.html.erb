@@ -18,13 +18,13 @@
     <div data-hook="checkout_payment_step" id="payment_method_' + <%= @payment_method.id %>">
       <% if @wallet_payment_sources.present? %>
         <div class="card_options">
-          <%= radio_button_tag 'subscription[use_existing_card]', 'yes', true %>
-          <label for="subscription_use_existing_card_yes">
+          <%= radio_button_tag 'use_existing_card', 'yes', true %>
+          <label for="use_existing_card_yes">
             <%= t('spree.use_existing_cc') %>
           </label>
           <br/>
-          <%= radio_button_tag 'subscription[use_existing_card]', 'no' %>
-          <label for="subscription_use_existing_card_no">
+          <%= radio_button_tag 'use_existing_card', 'no' %>
+          <label for="use_existing_card_no">
             <%= t('spree.use_new_cc_or_payment_method') %>
           </label>
         </div>
