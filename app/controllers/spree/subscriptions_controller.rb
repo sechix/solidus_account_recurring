@@ -40,10 +40,10 @@ module Spree
               @plan_plan2 = @plan.plan2
               @plan_plan3 = @plan.plan3
 
-              if current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan_plan1) &&
-                 current_spree_user.update_columns(available_plan2: current_spree_user.available_plan2 + @plan_plan2) &&
-                 current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan_plan3) &&
-                 current_spree_user.update_columns(month_order_done: false)
+              if current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan_plan1,
+                                                   available_plan2: current_spree_user.available_plan2 + @plan_plan2,
+                                                   available_plan3: current_spree_user.available_plan3 + @plan_plan3,
+                                                   month_order_done: false)
                     redirect_to '/subscribersteps' , notice: Spree.t(:thanks_for_subscribing)
               else
                 flash[:error] = Spree.t(:error)
@@ -93,9 +93,9 @@ module Spree
 
               if @subscription.update(@plan.api_plan_id)
                  if @subscription.save_and_manage_api(plan_id: @plan.id)
-                        if  current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan.plan1 - previousplan.plan1) &&
-                            current_spree_user.update_columns(available_plan2: current_spree_user.available_plan2 + @plan.plan2 - previousplan.plan2) &&
-                            current_spree_user.update_columns(available_plan3: current_spree_user.available_plan3 + @plan.plan3 - previousplan.plan3)
+                        if  current_spree_user.update_columns(available_plan1: current_spree_user.available_plan1 + @plan.plan1 - previousplan.plan1,
+                                                              available_plan2: current_spree_user.available_plan2 + @plan.plan2 - previousplan.plan2,
+                                                              available_plan3: current_spree_user.available_plan3 + @plan.plan3 - previousplan.plan3)
                             flash[:notice] = Spree.t(:subscription_change)
                             redirect_to '/account' and return
                         else
