@@ -6,6 +6,7 @@ module Spree
     before_action :find_subscription, only: [:destroy]
     before_action :authenticate_subscription, only: [:new, :create]
     before_action :payment_method, only: [:new]
+    after_action :add_to_subscribers_mailchimp, only: [:create]
 
     def new
       if @user_subscriptions.present? or try_spree_current_user.try(:has_spree_role?, "subscriber")
@@ -123,6 +124,22 @@ module Spree
 
 
     private
+
+
+    def add_to_subscribers_mailchimp
+      if params[:accept_promotions_mails]
+
+        result = SolidusMailchimpSync::Mailchimp.request(
+            :put,
+            "/lists/#{ENV['LIST_ID']}/members/#{SolidusMailchimpSync::Util.subscriber_hash(spree_current_user.email)}",
+            body: {
+                status: "subscribed",
+                email_address: spree_current_user.email
+            })
+
+      end
+    end
+
 
     def find_active_plan
       unless @plan = Spree::Plan.active.where(id: params[:plan_id]).first
