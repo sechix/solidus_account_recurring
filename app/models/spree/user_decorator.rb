@@ -13,6 +13,14 @@ Spree::User.class_eval do
     end
 
   end
+
+
+  def update_existing_stripe_customer(customer_id)
+    self.update_columns(stripe_customer_id: customer_id)
+    customer = Stripe::Customer.retrieve(customer_id)
+    return customer
+  end
+
   def find_stripe_customer
     return api_customer if stripe_customer_id?
   end
