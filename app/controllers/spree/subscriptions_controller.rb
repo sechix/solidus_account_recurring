@@ -173,10 +173,13 @@ module Spree
     end
 
     def authenticate_subscription
-      if subscription = current_spree_user.subscriptions.undeleted.first
-        flash[:alert] = Spree.t(:already_subscribed)
-        redirect_to '/account'
+      if current_spree_user
+          if subscription = current_spree_user.subscriptions.undeleted.first
+            flash[:alert] = Spree.t(:already_subscribed)
+            redirect_to '/account'
+          end
       end
+
     end
   end
 end
