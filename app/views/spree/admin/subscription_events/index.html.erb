@@ -58,7 +58,7 @@
     </tbody>
   </table>
 
-  <%= paginate @subscription_events %>
+  <%= paginate @subscription_events, theme: "solidus_admin"%>
 <% else %>
   <div class="col-md-12 no-objects-found alert alert-info">
     <%= Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/subscription_event')) %>
