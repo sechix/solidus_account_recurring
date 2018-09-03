@@ -1,8 +1,13 @@
 module Spree
   class SubscriptionsController < StoreController
     prepend_before_action :load_object
+    prepend_before_action :check_registration,
+                          except: [:registration, :update_registration]
+
+
+
     before_action :find_active_plan, only: [:new, :create]
-    before_action :find_plan, only: [:show, :destroy, :update]
+    before_action :find_plan, only: [:show, :destroy, :update, :new, :registration]
     before_action :find_subscription, only: [:destroy]
     before_action :authenticate_subscription, only: [:new, :create]
     before_action :payment_method, only: [:new]
@@ -120,6 +125,28 @@ module Spree
     def edit
 
 
+    end
+    def registration
+      redirect_to new_recurring_plan_subscription_url(@plan) if spree_current_user
+      @user = Spree::User.new
+      @showlogin = params[:showlogin].present? ? params[:showlogin] : "register"
+    end
+
+
+    # Introduces a registration step whenever the +registration_step+ preference is true.
+    def check_registration
+      return unless registration_required?
+      store_location
+      redirect_to spree.subscriptions_registration_path(:plan_id => params[:plan_id])
+    end
+
+    def registration_required?
+      Spree::Auth::Config[:registration_step] &&
+          !already_registered?
+    end
+
+    def already_registered?
+      spree_current_user
     end
 
 
