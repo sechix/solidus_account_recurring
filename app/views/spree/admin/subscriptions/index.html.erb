@@ -27,6 +27,9 @@
     <div class="date-range-filter form-group">
       <%= label_tag nil, Spree.t(:email) %>
       <%= s.text_field :email_eq, class: "form-control" %>
+
+      <%= s.checkbox_field :active, true, class: "form-control" %>
+      <%= label_tag nil, Spree.t(:just_active) %>
     </div>
 
     <div class="form-actions">
