@@ -24,13 +24,23 @@
       </div>
     </div>
 
-    <div class="date-range-filter form-group">
-      <%= label_tag nil, Spree.t(:email) %>
-      <%= s.text_field :email_eq, class: "form-control" %>
+    <div class="col-6">
+      <div class="date-range-filter form-group">
+        <%= label_tag nil, Spree.t(:email) %>
+        <%= s.text_field :email_eq, class: "form-control" %>
+      </div>
 
-      <%= label_tag nil, Spree.t(:just_active) %><br />
-      <%= check_box_tag :active, true, :class => "form-control"%>
     </div>
+
+    <div class="col-6">
+      <div class="field checkbox">
+        <label>
+          <%= s.check_box :undeleted, { checked: params[:q][:undeleted] == 'true' }, 'true', 'false' %>
+          <%= t('spree.show_deleted') %>
+        </label>
+      </div>
+    </div>
+
 
     <div class="form-actions">
       <%= button Spree.t(:search), 'search'  %>
