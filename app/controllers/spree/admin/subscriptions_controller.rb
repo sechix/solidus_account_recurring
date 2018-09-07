@@ -3,6 +3,7 @@ module Spree
     class SubscriptionsController < Spree::Admin::BaseController
       include RansackDateSearch
       ransack_date_searchable date_col: 'subscribed_at'
+      ransack_date_searchable date_col: 'deleted_at'
 
       def index
         params[:q] = {} unless params[:q]
