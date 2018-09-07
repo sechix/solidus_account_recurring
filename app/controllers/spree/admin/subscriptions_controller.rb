@@ -7,26 +7,18 @@ module Spree
       def index
         params[:q] = {} unless params[:q]
 
-        if params[:q][:subscribed_at_gt].blank?
-          params[:q][:subscribed_at_gt] = Date.today.beginning_of_year
-        else
+        if !params[:q][:subscribed_at_gt].blank?
           params[:q][:subscribed_at_gt] = params[:q][:subscribed_at_gt].to_date
         end
 
-        if params[:q][:subscribed_at_lt].blank?
-          params[:q][:subscribed_at_lt] = Date.today.end_of_month
-        else
+        if !params[:q][:subscribed_at_lt].blank?
           params[:q][:subscribed_at_lt] = params[:q][:subscribed_at_lt].to_date
         end
 
 
 
-        if params[:active]
-          @search = Spree::Subscription.undeleted.ransack(params[:q])
 
-        else
-          @search = Spree::Subscription.ransack(params[:q])
-        end
+        @search = Spree::Subscription.ransack(params[:q])
         @subscriptions = @search.result.includes(plan: :recurring).references(plan: :recurring).page(params[:page]).per(15)
         respond_with(@subscriptions)
       end
