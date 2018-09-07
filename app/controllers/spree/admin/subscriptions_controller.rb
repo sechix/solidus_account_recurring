@@ -3,7 +3,6 @@ module Spree
     class SubscriptionsController < Spree::Admin::BaseController
       include RansackDateSearch
       ransack_date_searchable date_col: 'subscribed_at'
-      ransack_date_searchable date_col: 'deleted_at'
 
       def index
         params[:q] = {} unless params[:q]
@@ -21,7 +20,13 @@ module Spree
         end
 
 
-        @search = Spree::Subscription.ransack(params[:q])
+
+        if params[:active]
+          @search = Spree::Subscription.undeleted.ransack(params[:q])
+
+        else
+          @search = Spree::Subscription.ransack(params[:q])
+        end
         @subscriptions = @search.result.includes(plan: :recurring).references(plan: :recurring).page(params[:page]).per(15)
         respond_with(@subscriptions)
       end

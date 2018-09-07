@@ -28,8 +28,8 @@
       <%= label_tag nil, Spree.t(:email) %>
       <%= s.text_field :email_eq, class: "form-control" %>
 
-      <%= s.label :deleted_at_null %><br />
-      <%= s.check_box :deleted_at_null, :class => "form-control" %>
+      <%= label :active %><br />
+      <%= check_box :active, :class => "form-control", :checked => true %>
     </div>
 
     <div class="form-actions">
