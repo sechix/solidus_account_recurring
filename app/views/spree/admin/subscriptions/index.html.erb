@@ -36,7 +36,7 @@
       <div class="field checkbox">
         <label>
           <%= s.check_box :undeleted, { checked: params[:q][:undeleted] == 'true' }, 'true', 'false' %>
-          <%= t('spree.show_deleted') %>
+          <%= Spree.t(:only_active) %>
         </label>
       </div>
     </div>
