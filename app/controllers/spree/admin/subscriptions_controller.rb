@@ -17,8 +17,11 @@ module Spree
 
 
 
-
-        @search = Spree::Subscription.ransack(params[:q])
+        if params[:q][:undeleted]
+          @search = Spree::Subscription.undeleted.ransack(params[:q])
+        else
+          @search = Spree::Subscription.ransack(params[:q])
+        end
         @subscriptions = @search.result.includes(plan: :recurring).references(plan: :recurring).page(params[:page]).per(15)
         respond_with(@subscriptions)
       end

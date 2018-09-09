@@ -31,9 +31,9 @@ module Spree
 
       def parse_ransack_date_search_param_gt!
         if params[:q][ransack_date_search_param_gt].blank?
-          params[:q][ransack_date_search_param_gt] = Time.current.beginning_of_month
+          params[:q][ransack_date_search_param_gt] = Time.current.beginning_of_year
         else
-          params[:q][ransack_date_search_param_gt] = Time.zone.parse(params[:q][ransack_date_search_param_gt]).beginning_of_day rescue Time.current.beginning_of_month
+          params[:q][ransack_date_search_param_gt] = Time.zone.parse(params[:q][ransack_date_search_param_gt]).beginning_of_day rescue Time.current.beginning_of_year
         end
       end
 
