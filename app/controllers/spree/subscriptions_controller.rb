@@ -68,14 +68,14 @@ module Spree
         if  current_spree_user.update_columns(available_plan1: 0, available_plan2: 0, available_plan3: 0,
                                               own_plan1: 0, own_plan2: 0, own_plan3: 0)
 
-             redirect_back_or_default(account_path)
+             redirect_to 'account#my_plans'
         else
             flash[:error] = Spree.t(:error)
-            redirect_back_or_default(account_path)
+            redirect_to 'account#my_plans'
         end
       else
         flash[:error] = Spree.t(:error)
-        redirect_back_or_default(account_path)
+        redirect_to 'account#my_plans'
       end
    
     end
@@ -83,7 +83,7 @@ module Spree
     def update
       if !current_spree_user.month_order_done
         flash[:error] = Spree.t(:no_change_plan_order_done)
-        redirect_back_or_default(account_path)
+        redirect_to 'account#my_plans'
       else
         @plan = Spree::Plan.active.where(id: params[:plan_id]).first
         if @subscription = Spree::Subscription.undeleted.where(id: params[:id]).first
@@ -103,22 +103,22 @@ module Spree
                                                               available_plan2: current_spree_user.available_plan2 + @plan.plan2 - previousplan.plan2,
                                                               available_plan3: current_spree_user.available_plan3 + @plan.plan3 - previousplan.plan3)
                             flash[:notice] = Spree.t(:subscription_change)
-                            redirect_back_or_default(account_path)
+                            redirect_to 'account#my_plans'
                         else
                             flash[:error] = Spree.t(:error)
-                            redirect_back_or_default(account_path)
+                            redirect_to 'account#my_plans'
                         end 
                  else
                   flash[:error] = Spree.t(:error)
-                  redirect_back_or_default(account_path)
+                  redirect_to 'account#my_plans'
                  end 
               else
                   flash[:error] = Spree.t(:error)
-                  redirect_back_or_default(account_path)
+                  redirect_to 'account#my_plans'
               end
            else
               flash[:error] = Spree.t(:error)
-              redirect_back_or_default(account_path)
+              redirect_to 'account#my_plans'
           end
         end
     end
