@@ -62,7 +62,7 @@
     <tbody>
       <% @subscriptions.each do |subscription|%>
         <tr data-hook="admin_subscriptions_index_rows" class="<%= cycle('odd', 'even')%>">
-          <td><%= subscription.email %></td>
+          <td><%= link_to subscription.email, edit_admin_user_path(subscription.user) %></td>
           <td><%= subscription.plan.name %> <%= link_to subscription.plan.api_plan_id, edit_admin_recurring_plan_url(subscription.plan.recurring, subscription.plan) %></td>
           <td><%= subscription.subscribed_at.try(:strftime, '%d-%h-%Y') %></td>
           <td><%= subscription.unsubscribed_at.try(:strftime, '%d-%h-%Y') || 'N/A' %></td>
