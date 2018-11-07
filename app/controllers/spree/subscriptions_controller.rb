@@ -14,7 +14,7 @@ module Spree
     after_action :add_to_subscribers_mailchimp, only: [:create]
 
     def new
-      @total_with_discount = number_to_currency(@plan.amount)
+      @total_with_discount = @plan.amount
       if @user_subscriptions.present? or try_spree_current_user.try(:has_spree_role?, "subscriber")
         flash[:error] = Spree.t(:already_have_subscription)
         redirect_to '/account#my_plans' and return
@@ -170,9 +170,9 @@ module Spree
         if coupon.present?
 
           if coupon.amount_off.present?
-            @total_with_discount = number_to_currency(@plan.amount - coupon.amount_off)
+            @total_with_discount = @plan.amount - coupon.amount_off
           elsif coupon.percent_off.present?
-            @total_with_discount = number_to_currency(@plan.amount - (@plan.amount*coupon.percent_off/100))
+            @total_with_discount = @plan.amount - (@plan.amount*coupon.percent_off/100)
           end
           @coupon_description = [Spree.t(:duration), Spree.t(:coupon.duration)].join(" ")
           if coupon.duration == 'repeating'
