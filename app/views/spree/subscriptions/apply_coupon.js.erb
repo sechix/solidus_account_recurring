@@ -1,8 +1,0 @@
-<% if ( flash[:error].blank? ) %>
-$("#total_plan").html('<%= escape_javascript render("spree/subscriptions/total_plan") %>');
-$("#form_code").hide();
-$('#coupon_loading').hide();
-
-<% else %>
-$('#total_plan').append("<div><%= flash[:error] %></div>");
-<% end %>
