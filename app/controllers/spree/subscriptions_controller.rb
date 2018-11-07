@@ -178,7 +178,7 @@ module Spree
           if coupon.duration == 'repeating'
             @coupon_description = [coupon_description, Spree.t(:coupon.duration_in_months), Spree.t(:month)].join(" ")
           end
-
+          @coupon_code = params[:coupon_code]
           respond_to do |format|
             format.js
           end
