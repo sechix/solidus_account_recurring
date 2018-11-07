@@ -14,6 +14,11 @@ en:
         one: Subscription Event
         other: Subscription Events
   spree:
+    duration: duration
+    forever: forever
+    once: once
+    repeating: repeating
+    coupon_error: error applying coupon code
     api_plan_id: API Plan ID
     amount: Amount
     back_to_recurrings_list: Back To Recurrings List

@@ -7,13 +7,14 @@ module Spree
 
 
     before_action :find_active_plan, only: [:new, :create]
-    before_action :find_plan, only: [:show, :destroy, :update, :new, :registration]
+    before_action :find_plan, only: [:show, :destroy, :update, :new, :registration, :apply_coupon]
     before_action :find_subscription, only: [:destroy]
     before_action :authenticate_subscription, only: [:new, :create]
     before_action :payment_method, only: [:new]
     after_action :add_to_subscribers_mailchimp, only: [:create]
 
     def new
+      @total_with_discount = number_to_currency(@plan.amount)
       if @user_subscriptions.present? or try_spree_current_user.try(:has_spree_role?, "subscriber")
         flash[:error] = Spree.t(:already_have_subscription)
         redirect_to '/account#my_plans' and return
@@ -152,6 +153,42 @@ module Spree
       spree_current_user
     end
 
+    def apply_coupon
+
+        begin
+          Stripe.api_key = @plan.provider.preferred_secret_key
+          coupon = Stripe::Coupon.retrieve(params[:coupon_code])
+        rescue Stripe::CardError => e
+          flash[:error] = Spree.t(:coupon_error)
+          name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+          redirect_back_or_default(name_plan)
+        rescue => e
+           flash[:error] = Spree.t(:coupon_error)
+           name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+           redirect_back_or_default(name_plan)
+        end
+        if coupon.present?
+
+          if coupon.amount_off.present?
+            @total_with_discount = number_to_currency(@plan.amount - coupon.amount_off)
+          elsif coupon.percent_off.present?
+            @total_with_discount = number_to_currency(@plan.amount - (@plan.amount*coupon.percent_off/100))
+          end
+          @coupon_description = [Spree.t(:duration), Spree.t(:coupon.duration)].join(" ")
+          if coupon.duration == 'repeating'
+            @coupon_description = [coupon_description, Spree.t(:coupon.duration_in_months), Spree.t(:month)].join(" ")
+          end
+
+          respond_to do |format|
+            format.js
+          end
+
+        else
+          flash[:error] = Spree.t(:coupon_error)
+          name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
+          redirect_back_or_default(name_plan)
+        end
+    end
 
     private
 
