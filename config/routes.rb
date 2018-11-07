@@ -14,10 +14,7 @@ Spree::Core::Engine.routes.draw do
 
   namespace :recurring do
     resources :plans, only: [ :index , :show ], controller: '/spree/plans' do
-      resources :subscriptions, only: [:show, :create, :destroy, :new, :update, :edit ], controller: '/spree/subscriptions' do
-        get :apply_coupon , on: :member, controller: '/spree/subscriptions'
-        post :apply_coupon , on: :member, controller: '/spree/subscriptions'
-      end
+      resources :subscriptions, only: [:show, :create, :destroy, :new, :update, :edit ], controller: '/spree/subscriptions'
     end
   end  
 

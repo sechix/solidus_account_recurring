@@ -152,43 +152,7 @@ module Spree
     def already_registered?
       spree_current_user
     end
-
-    def apply_coupon
-
-        begin
-          Stripe.api_key = @plan.provider.preferred_secret_key
-          coupon = Stripe::Coupon.retrieve(params[:coupon_code])
-        rescue Stripe::CardError => e
-          flash[:error] = Spree.t(:coupon_error)
-          name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
-          redirect_back_or_default(name_plan)
-        rescue => e
-           flash[:error] = Spree.t(:coupon_error)
-           name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
-           redirect_back_or_default(name_plan)
-        end
-        if coupon.present?
-
-          if coupon.amount_off.present?
-            @total_with_discount = @plan.amount - coupon.amount_off
-          elsif coupon.percent_off.present?
-            @total_with_discount = @plan.amount - (@plan.amount*coupon.percent_off/100)
-          end
-          @coupon_description = [Spree.t(:duration), Spree.t(:coupon.duration)].join(" ")
-          if coupon.duration == 'repeating'
-            @coupon_description = [coupon_description, Spree.t(:coupon.duration_in_months), Spree.t(:month)].join(" ")
-          end
-          @coupon_code = params[:coupon_code]
-          respond_to do |format|
-            format.js
-          end
-
-        else
-          flash[:error] = Spree.t(:coupon_error)
-          name_plan = ['/recurring/plans/',@plan.id,'/subscriptions/new'].join("");
-          redirect_back_or_default(name_plan)
-        end
-    end
+    
 
     private
 
