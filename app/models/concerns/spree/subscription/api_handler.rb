@@ -8,8 +8,8 @@ module Spree
         before_update :unsubscribe, :if => [:unsubscribed_at_changed?, :unsubscribed_at?]
       end
 
-      def subscribe(use_existing_card, payment_source, wallet_payment_source_id)
-        provider.subscribe(self, use_existing_card, payment_source, wallet_payment_source_id)
+      def subscribe(use_existing_card, payment_source, wallet_payment_source_id, coupon_code)
+        provider.subscribe(self, use_existing_card, payment_source, wallet_payment_source_id, coupon_code)
       end
 
       def unsubscribe

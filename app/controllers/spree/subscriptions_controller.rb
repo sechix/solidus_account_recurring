@@ -37,12 +37,13 @@ module Spree
     end
 
     def create
+      coupon_code = params[:coupon_code].present? ? params[:coupon_code]:nil
       use_existing_card = params[:use_existing_card].present?  ? params[:use_existing_card]: 'not'
       wallet_payment_source_id = params[:order].present?  ? params[:order][:wallet_payment_source_id]: nil
       payment_source = params[:payment_source].present?  ? params[:payment_source]: nil
 
           @subscription = @plan.subscriptions.build(subscription_params.merge(user_id: current_spree_user.id))
-          if @subscription.subscribe(use_existing_card, payment_source, wallet_payment_source_id)  && @subscription.save_and_manage_api_3
+          if @subscription.subscribe(use_existing_card, payment_source, wallet_payment_source_id, coupon_code)  && @subscription.save_and_manage_api_3
               @plan_plan1 = @plan.plan1
               @plan_plan2 = @plan.plan2
               @plan_plan3 = @plan.plan3

@@ -3,7 +3,7 @@
     class StripeRecurring < Spree::Recurring
       module ApiHandler
         module SubscriptionApiHandler
-          def subscribe(subscription, use_existing_card, payment_source, wallet_payment_source_id)
+          def subscribe(subscription, use_existing_card, payment_source, wallet_payment_source_id, coupon_code)
             raise_invalid_object_error(subscription, Spree::Subscription)
 
 
@@ -41,7 +41,7 @@
 
 
             # Create the subscription
-            customer.subscriptions.create(plan: subscription.plan.api_plan_id)
+            customer.subscriptions.create(plan: subscription.plan.api_plan_id, coupon: coupon_code)
           end
 
           def unsubscribe(subscription)
