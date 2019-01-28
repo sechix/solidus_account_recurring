@@ -27,7 +27,7 @@
               payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
-                method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
+                method = Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StripeCreditCard', deleted_at: nil)
                 credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
                                                     last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
                                                     name: payment_source_name, user_id: subscription.user.id, payment_method_id: payment_source_id)
@@ -75,7 +75,7 @@
               payment_source_name = payment_source.values[0][:name]
               # Create credit card
               if card
-                method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
+                method = Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StripeCreditCard', deleted_at: nil)
                 credit_card = Spree::CreditCard.new(month: card.exp_month, year: card.exp_year, cc_type: card.brand.downcase,
                                                     last_digits: card.last4, gateway_customer_profile_id: customer.id, gateway_payment_profile_id: card.id,
                                                     name: payment_source_name, user_id: subscription.user.id, payment_method_id: payment_source_id)

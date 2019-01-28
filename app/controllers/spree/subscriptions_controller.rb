@@ -33,7 +33,7 @@ module Spree
     end
 
     def payment_method
-      @payment_method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil)
+      @payment_method = Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StripeCreditCard', deleted_at: nil)
     end
 
     def create

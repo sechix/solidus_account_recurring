@@ -51,7 +51,7 @@
       <% end %>
 
       <div id="payment-method-fields" data-hook>
-        <% method = Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil) %>
+        <% method = Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StripeCreditCard', deleted_at: nil) %>
         <p>
           <label>
             <%= radio_button_tag "payment_method_id", method.id%>
@@ -63,7 +63,7 @@
       <ul id="payment-methods" data-hook>
         <li id="payment_method_stripe" data-hook>
           <fieldset>
-            <%= render partial: "spree/checkout/payment/stripe_subscriptions", locals: { payment_method: Spree::PaymentMethod.find_by(type: 'Spree::Gateway::StripeGateway', deleted_at: nil) } %>
+            <%= render partial: "spree/checkout/payment/stripe_subscriptions", locals: { payment_method: Spree::PaymentMethod.find_by(type: 'Spree::PaymentMethod::StripeCreditCard', deleted_at: nil) } %>
           </fieldset>
         </li>
       </ul>
